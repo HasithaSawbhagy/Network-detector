@@ -2,6 +2,13 @@
 
 A comprehensive Windows desktop application built with **Electron + React + Express** for real-time network diagnostics, ISP performance analysis, and security threat detection — no browser needed, no cloud, everything runs locally on your machine.
 
+[![Latest release](https://img.shields.io/github/v/release/HasithaSawbhagy/Network-detector?label=release&sort=semver)](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/HasithaSawbhagy/Network-detector/total)](https://github.com/HasithaSawbhagy/Network-detector/releases)
+[![License](https://img.shields.io/github/license/HasithaSawbhagy/Network-detector)](LICENSE)
+![Platform](https://img.shields.io/badge/platform-Windows-blue)
+
+📥 **[Download the latest release](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)**
+
 ---
 
 ## Features
@@ -103,7 +110,18 @@ Appears only when **WSL (Windows Subsystem for Linux)** is installed. Provides L
 
 ## Recent Updates
 
-### v1.3.0 (Latest) — **Accuracy Fixes & WSL Power Tools**
+> **Versioning:** This project follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Every release is tagged in git (e.g. `v1.3.2`) and published on the **[Releases page](https://github.com/HasithaSawbhagy/Network-detector/releases)** with the installer attached. To find the code for any version, check out its tag: `git checkout v1.3.2`.
+
+### v1.3.2 (Latest) — **Router Admin & Bug Fixes**
+- 🔧 **Fixed "Open Admin Page" doing nothing** — endpoint path mismatch (`/api/open-browser` vs `/api/network/open-browser`) corrected; the button now opens the router UI in your system browser.
+- 🌐 **SLT / broadband ONT support** — router-admin brand detection now follows the login redirect and recognises Boa/Realtek ISP routers (e.g. SLT-Mobitel HG7). Added a session-cookie login + client-list scraper for these devices, plus an honest fallback message for unsupported models.
+- 🎨 **Wi-Fi Analyzer layout fix** — moved "Nearby Networks" to fill the grid gap left by the full-width dual-band notice.
+
+### v1.3.1 — **Dual-band Capability & Router Admin**
+- 📶 **Adapter band capability** — shows whether your Wi-Fi card supports 2.4 GHz + 5 GHz (read from `netsh wlan show drivers`), with a warning banner when you're on the slower 2.4 GHz band despite 5 GHz support.
+- 🔧 **Router Admin panel** (Devices tab) — enter router credentials to fetch the full device list directly from the router (TP-Link Archer, ASUS, generic), with a one-click "Open Admin Page".
+
+### v1.3.0 — **Accuracy Fixes & WSL Power Tools**
 
 **Bug fixes (based on ChatGPT analysis of the generated report):**
 -  **ARP spoofing false positive fixed** — the previous detection flagged any MAC with multiple IPs (normal for VMs / VPN adapters). Rewritten to track the **gateway MAC over time**; only fires High when the gateway IP changes to a different MAC — a genuine MITM indicator. Downgraded single-occurrence duplicate MACs to Medium.
@@ -269,9 +287,9 @@ Electron main.js
 
 ##  Getting Started (End Users)
 
-**Latest Release:** v1.3.0
+**Latest Release:** v1.3.2
 
-1. Download **Network Detector Setup 1.3.0.exe** from `dist-electron/`
+1. Download **Network Detector Setup 1.3.2.exe** from the **[Releases page](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)**
 2. Run the installer (Windows may show SmartScreen warning — click "More info" → "Run anyway")
 3. App opens automatically after installation
 4. Navigate tabs via the sidebar:
