@@ -6,7 +6,7 @@ A comprehensive Windows desktop application built with **Electron + React + Expr
 
 ## Features
 
-### 📊 **Overview** — Network Snapshot
+### **Overview** — Network Snapshot
 Real-time monitoring of your connection health with 6 live cards:
 - **Wi-Fi Info**: SSID, signal quality, link speed, security protocol
 - **Live Bandwidth**: Download/upload speeds (updates every second)
@@ -15,14 +15,14 @@ Real-time monitoring of your connection health with 6 live cards:
 - **Public Details**: External IP, ISP/ASN, geolocation
 - **Connection Health**: Stability score (0-100) with local/ISP breakdown
 
-### 🎯 **ISP Truth** — Routing Analysis
+### **ISP Truth** — Routing Analysis
 Expose ISP performance issues with evidence-based metrics:
 - **Multi-Region Latency Matrix**: Ping local exchange, Singapore (1.1.1.1), US East (8.8.8.8), US West (208.67.222.222)
 - **CDN Speed Test**: Download 10MB from Cloudflare edge servers
 - **DNS Hijacking Detector**: Compare system DNS vs DoH (Cloudflare)
 - **Copy Evidence Report**: Export all metrics to clipboard for ISP support tickets
 
-### � **Wi-Fi Analyzer** — Signal & Channels
+### **Wi-Fi Analyzer** — Signal & Channels
 Professional wireless diagnostics that rival commercial Wi-Fi analyzers:
 - **Signal Analysis**: SSID, BSSID, band (2.4/5 GHz), channel, signal %, **RSSI (dBm)**
 - **Standard Detection**: 802.11ax (Wi-Fi 6) / ac (Wi-Fi 5) / n (Wi-Fi 4)
@@ -30,7 +30,7 @@ Professional wireless diagnostics that rival commercial Wi-Fi analyzers:
 - **Channel Interference Scan**: Counts networks per channel, recommends the clearest 2.4 GHz channel (1/6/11)
 - **Nearby Networks**: Lists surrounding APs sorted by signal strength
 
-### ❤ **Health & Tips** — Scores & Advice
+### **Health & Tips** — Scores & Advice
 Per-category scoring and intelligent recommendations:
 - **8 Category Scores** (0-100): Internet, Wi-Fi, Latency, Stability, Security, DNS, Streaming, Gaming
 - **Intelligent Recommendations**: Plain-English, actionable advice based on measured results
@@ -38,7 +38,7 @@ Per-category scoring and intelligent recommendations:
 - **Detailed Local Health**: Gateway ping with avg/min/max/median/**p95**/jitter/loss over 20 samples
 - **Device Health**: CPU load, RAM usage, and power state that can throttle Wi-Fi
 
-### �🛡️ **Security** — Threat Scanner
+### **Security** — Threat Scanner
 Advanced network security auditing:
 - **MITM Check**: Detect man-in-the-middle attacks (combines ARP + DNS + TLS checks)
 - **ARP Spoofing**: Identify duplicate MAC addresses (classic MITM signature)
@@ -49,7 +49,7 @@ Advanced network security auditing:
 - **SSL/TLS Verification**: Certificate validation for known-good sites
 - **Encryption Analysis**: Cipher suite strength (TKIP vs AES/CCMP)
 
-### 📡 **Devices** — Connected Devices
+### **Devices** — Connected Devices
 Live enumeration of all devices on your network:
 - IP address, MAC address, hostname (reverse DNS)
 - **Vendor lookup** via MAC OUI database (Apple, Samsung, Intel, TP-Link, etc.)
@@ -57,7 +57,7 @@ Live enumeration of all devices on your network:
 - Gateway highlighted with visual indicator
 - One-click rescan
 
-### ⚙️ **Diagnostics** — Deep Inspect
+### **Diagnostics** — Deep Inspect
 Detailed network interface analysis:
 - Interface details (protocol, band, channel, BSSID)
 - DHCP lease information
@@ -66,30 +66,30 @@ Detailed network interface analysis:
 - Network device count from ARP table
 - Wireless signal strength trends
 
-### 📖 **How to Use** — Metric Guide
+### **How to Use** — Metric Guide
 Built-in documentation explaining:
 - What each metric measures
 - How to interpret results (good/warning/critical thresholds)
 - Actionable recommendations for issues
 - Glossary of networking terms
 
-### 🚀 **Speed & Stability** — Phases & Bufferbloat
+### **Speed & Stability** — Phases & Bufferbloat
 On-demand deep speed analysis:
 - **Connection phase breakdown** — times DNS, TCP, TLS, and time-to-first-byte during a real download to pinpoint where slowness starts
 - **Bufferbloat grade (A–F)** — measures latency increase under load (critical for calls/gaming)
 - **60-second stability test** — pings every second with a live graph, counting drops and reconnects
 
-### 🗺 **Route Trace** — Hop-by-Hop Path
+### **Route Trace** — Hop-by-Hop Path
 - Full traceroute with per-hop latency
 - **Geolocation** of each public hop (ISP/organisation, city, country)
 - Automatic detection of the largest latency jump (the bottleneck)
 
-### 📈 **Trends** — History & Graphs
+### **Trends** — History & Graphs
 - Samples download, upload, latency, and Wi-Fi signal every 30 seconds
 - Stored **locally** on your device (no cloud) — capped at the last 200 samples
 - Inline SVG sparkline charts to spot recurring drop-outs and peak-hour congestion
 
-### 🐧 **WSL Tools** — Linux Networking (auto-detected)
+### **WSL Tools** — Linux Networking (auto-detected)
 Appears only when **WSL (Windows Subsystem for Linux)** is installed. Provides Linux-native tools that use different probe types than Windows — revealing hops and issues Windows tools miss:
 - **mtr** — combined traceroute + ping showing per-hop packet loss and jitter (10 probes per hop)
 - **dig** — DNSSEC validation (AD flag / RRSIG records)
@@ -106,23 +106,23 @@ Appears only when **WSL (Windows Subsystem for Linux)** is installed. Provides L
 ### v1.3.0 (Latest) — **Accuracy Fixes & WSL Power Tools**
 
 **Bug fixes (based on ChatGPT analysis of the generated report):**
-- 🐛 **ARP spoofing false positive fixed** — the previous detection flagged any MAC with multiple IPs (normal for VMs / VPN adapters). Rewritten to track the **gateway MAC over time**; only fires High when the gateway IP changes to a different MAC — a genuine MITM indicator. Downgraded single-occurrence duplicate MACs to Medium.
-- 🐛 **Stability rating now accurate** — "Poor — occasional drops" was shown even when there were **zero drops** (just high jitter). New tier: "Fair — high jitter (no drops)" when loss=0 but jitter ≥30 ms.
-- 🐛 **DNS benchmark anomalies labelled** — values >200 ms are now annotated with "⚠ slow (possible cache miss or resolver congestion)" in the report so they aren't misread as typical latency.
-- 🐛 **LAN device scan improved** — now performs a parallel **ping sweep** of the /24 subnet before reading the ARP cache. Devices that haven't communicated recently (phones on standby, smart TVs) now appear correctly.
-- 🔧 **Report clarifications** — Throughput now shows a note explaining it's the live NIC rate, not a speed test result; channel-overlap warning added for non-standard 2.4 GHz channels; signal quality labelled (Excellent / Very Good / Good / Fair / Poor).
+-  **ARP spoofing false positive fixed** — the previous detection flagged any MAC with multiple IPs (normal for VMs / VPN adapters). Rewritten to track the **gateway MAC over time**; only fires High when the gateway IP changes to a different MAC — a genuine MITM indicator. Downgraded single-occurrence duplicate MACs to Medium.
+-  **Stability rating now accurate** — "Poor — occasional drops" was shown even when there were **zero drops** (just high jitter). New tier: "Fair — high jitter (no drops)" when loss=0 but jitter ≥30 ms.
+-  **DNS benchmark anomalies labelled** — values >200 ms are now annotated with "⚠ slow (possible cache miss or resolver congestion)" in the report so they aren't misread as typical latency.
+-  **LAN device scan improved** — now performs a parallel **ping sweep** of the /24 subnet before reading the ARP cache. Devices that haven't communicated recently (phones on standby, smart TVs) now appear correctly.
+-  **Report clarifications** — Throughput now shows a note explaining it's the live NIC rate, not a speed test result; channel-overlap warning added for non-standard 2.4 GHz channels; signal quality labelled (Excellent / Very Good / Good / Fair / Poor).
 
 **New WSL tools (4 additions):**
-- 🐧 **traceroute** — UDP-based path analysis (complementary to Windows ICMP tracert)
-- 🐧 **nmap LAN scan** — discovers phones, smart TVs, and isolated devices ARP misses
-- 🐧 **IPv6 connectivity test** — verifies dual-stack connectivity
-- 🐧 **HTTP Header Inspector** — detects ISP proxy injection, CDN/edge identification
+-  **traceroute** — UDP-based path analysis (complementary to Windows ICMP tracert)
+-  **nmap LAN scan** — discovers phones, smart TVs, and isolated devices ARP misses
+-  **IPv6 connectivity test** — verifies dual-stack connectivity
+-  **HTTP Header Inspector** — detects ISP proxy injection, CDN/edge identification
 
 ### v1.2.4 — **Performance: TCP Ping Engine**
-- ⚡ **Stability test now exactly 60 seconds** — replaced `ping.exe` subprocess (200ms+ spawn overhead, 2–4s under load) with a **Node.js TCP socket ping** (~50ms, no subprocess). Previously the test could take 5+ minutes under load.
-- ⚡ DNS benchmark providers now tested in parallel.
-- ⚡ Geo-lookup cache — repeat route traces are instant (no redundant ipinfo.io calls).
-- ⚡ Health check ping count reduced (10→6) — saves ~4s per run.
+-  **Stability test now exactly 60 seconds** — replaced `ping.exe` subprocess (200ms+ spawn overhead, 2–4s under load) with a **Node.js TCP socket ping** (~50ms, no subprocess). Previously the test could take 5+ minutes under load.
+-  DNS benchmark providers now tested in parallel.
+-  Geo-lookup cache — repeat route traces are instant (no redundant ipinfo.io calls).
+-  Health check ping count reduced (10→6) — saves ~4s per run.
 
 ### v1.2.3 — **Report Quality Fixes**
 - Fixed DNS benchmark showing "N/A" (was reading wrong field name).
@@ -267,7 +267,7 @@ Electron main.js
 
 ---
 
-## 🚀 Getting Started (End Users)
+##  Getting Started (End Users)
 
 **Latest Release:** v1.3.0
 
@@ -415,9 +415,9 @@ This command:
 
 | Version | Date | Changes |
 |---|---|---|
-| **1.2.0** | 2026-06-28 | 🚀 **Speed phases, route tracing, trends & WSL**: new **Speed & Stability** tab (DNS/TCP/TLS/TTFB phase breakdown via `curl.exe`, bufferbloat grade A–F, 60-second stability test with live drop/reconnect graph); new **Route Trace** tab (hop-by-hop traceroute with per-hop geolocation + bottleneck detection); new **Trends** tab (local 30s-interval history with inline SVG sparklines); new **WSL Tools** tab (auto-detected — mtr per-hop loss + dig DNSSEC, with copy-paste install command); guide updated for all new tabs |
-| **1.1.0** | 2026-06-28 | 🧭 **Major diagnostics upgrade**: Accurate active-interface detection (Wi-Fi/Ethernet/VPN via default route); new **Wi-Fi Analyzer** tab (RSSI dBm, channel interference scan, link rates); new **Health & Tips** tab (8 category scores + intelligent recommendations); detailed gateway health (avg/min/max/median/p95/jitter/loss); DNS provider benchmark; device health (CPU/RAM/power); JSON + Markdown report export |
-| 1.0.10 | 2026-06-20 | 🐛 **Bug Fix**: DNS hijacking detector fixed to eliminate false positives — now only flags if IPs are from different organizations (not just different CDN servers); improved analysis messages to distinguish CDN load-balancing from actual hijacking |
+| **1.2.0** | 2026-06-28 |  **Speed phases, route tracing, trends & WSL**: new **Speed & Stability** tab (DNS/TCP/TLS/TTFB phase breakdown via `curl.exe`, bufferbloat grade A–F, 60-second stability test with live drop/reconnect graph); new **Route Trace** tab (hop-by-hop traceroute with per-hop geolocation + bottleneck detection); new **Trends** tab (local 30s-interval history with inline SVG sparklines); new **WSL Tools** tab (auto-detected — mtr per-hop loss + dig DNSSEC, with copy-paste install command); guide updated for all new tabs |
+| **1.1.0** | 2026-06-28 |  **Major diagnostics upgrade**: Accurate active-interface detection (Wi-Fi/Ethernet/VPN via default route); new **Wi-Fi Analyzer** tab (RSSI dBm, channel interference scan, link rates); new **Health & Tips** tab (8 category scores + intelligent recommendations); detailed gateway health (avg/min/max/median/p95/jitter/loss); DNS provider benchmark; device health (CPU/RAM/power); JSON + Markdown report export |
+| 1.0.10 | 2026-06-20 |  **Bug Fix**: DNS hijacking detector fixed to eliminate false positives — now only flags if IPs are from different organizations (not just different CDN servers); improved analysis messages to distinguish CDN load-balancing from actual hijacking |
 | 1.0.9 | 2026-06-19 | Modern collapsible sidebar navigation; Connected Devices tab with MAC vendor lookup (~100 manufacturers); How to Use guide with comprehensive metric explanations; Advanced security suite (MITM, ARP spoofing, WiFi audit, DNS leak); Floating toolbar styling (sharp top corners) |
 | 1.0.8 | 2026-06-18 | Added all advanced security endpoints; Fixed blank window bug (frontend referenced non-existent endpoints) |
 | 1.0.7 | 2026-06-17 | ISP Truth tab: Multi-region latency matrix, CDN speed test, DNS hijacking detector; Split health score (30% local + 70% ISP); ISP Evidence Report copy button |
@@ -431,7 +431,7 @@ This command:
 
 ---
 
-## 💡 Usage Tips
+## Usage Tips
 
 ### For ISP Troubleshooting
 1. Go to **ISP Truth** tab
@@ -464,7 +464,7 @@ This command:
 
 ---
 
-## 📄 License
+##  License
 
 This project is for personal/educational use. No warranty provided. Network scanning features require Windows 10/11 and may need Administrator privileges.
 
