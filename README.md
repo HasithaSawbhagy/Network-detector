@@ -112,7 +112,13 @@ Appears only when **WSL (Windows Subsystem for Linux)** is installed. Provides L
 
 > **Versioning:** This project follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Every release is tagged in git (e.g. `v1.3.2`) and published on the **[Releases page](https://github.com/HasithaSawbhagy/Network-detector/releases)** with the installer attached. To find the code for any version, check out its tag: `git checkout v1.3.2`.
 
-### v1.3.3 (Latest) - **Performance & Polish**
+### v1.3.4 (Latest) - **Accurate Speed Test (Multi-Stream)**
+- **Fixed under-reported download speed.** The CDN speed test used a single TCP connection downloading only 10MB, so TCP slow-start and the bandwidth-delay product capped it far below the real line speed (e.g. showing 14 Mbps on a 45 Mbps line).
+- **New multi-stream engine:** opens **6 parallel connections**, ignores the TCP slow-start warm-up window, and reports a **trimmed mean of the fastest sustained samples** (the same approach Ookla/Fast.com use). Also reports **peak** throughput.
+- **Clarified the single-stream number.** The Connection Phase Breakdown's download figure is now labelled **"Single-stream Mbps"** with a note that it is intentionally lower than line speed - the multi-stream CDN Speed Test is the real measurement. (Units were always correct; the label was just misleading.)
+- Report now separates "Single-stream" from the multi-stream "CDN Speed Test" and includes peak + data downloaded.
+
+### v1.3.3 - **Performance & Polish**
 - Removed all em-dash (`-`) characters from UI, labels, and documentation for cleaner typography.
 - **~50% faster startup:** restructured 4-phase background loading so the UI is responsive within <1s. Zero-subprocess calls fire first; pings/scans stagger in at 0.8s, 2.5s, and 5s.
 - **Global ping matrix now parallel:** regional targets (Singapore, US East, US West) now measured simultaneously instead of sequentially. Result appears in ~5s instead of 15s+.
@@ -295,9 +301,9 @@ Electron main.js
 
 ##  Getting Started (End Users)
 
-**Latest Release:** v1.3.3
+**Latest Release:** v1.3.4
 
-1. Download **Network Detector Setup 1.3.3.exe** from the **[Releases page](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)**
+1. Download **Network Detector Setup 1.3.4.exe** from the **[Releases page](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)**
 2. Run the installer (Windows may show SmartScreen warning - click "More info" → "Run anyway")
 3. App opens automatically after installation
 4. Navigate tabs via the sidebar:

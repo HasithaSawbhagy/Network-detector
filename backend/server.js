@@ -306,7 +306,7 @@ app.post('/api/network/router-devices', async (req, res) => {
         if (!ip || typeof ip !== 'string' || !/^\d{1,3}(\.\d{1,3}){3}$/.test(ip)) {
             return res.status(400).json({ error: 'Invalid router IP' });
         }
-        // Sanitise: only allow private/LAN IPs — router creds must never be sent to public IPs
+        // Sanitise: only allow private/LAN IPs - router creds must never be sent to public IPs
         const [a, b] = ip.split('.').map(Number);
         const isPrivate = a === 10 || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168);
         if (!isPrivate) return res.status(403).json({ error: 'Only local network IPs allowed' });
@@ -446,7 +446,7 @@ app.post('/api/toolbar/opacity', (req, res) => {
     res.json({ ok: true });
 });
 
-// Floating toolbar — served as a standalone HTML page (no React, no bundler)
+// Floating toolbar - served as a standalone HTML page (no React, no bundler)
 app.get('/toolbar', (req, res) => {
     res.setHeader('Content-Type', 'text/html');
     res.send(`<!DOCTYPE html>

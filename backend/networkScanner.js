@@ -396,63 +396,109 @@ async function getGlobalPingMatrix() {
  * without relying on ISP-whitelisted speed test servers
  */
 async function runCdnSpeedTest() {
-    return new Promise((resolve) => {
-        // Using Cloudflare's speed test file (10MB)
-        const testUrl = 'https://speed.cloudflare.com/__down?bytes=10000000';
-        const startTime = Date.now();
-        let downloadedBytes = 0;
+    // A single TCP stream cannot saturate a high-bandwidth link over a ~40ms path
+    // (bandwidth-delay product limits it), and TCP slow-start plus TLS setup drag
+    // the average down. Real speed tests use multiple parallel streams and measure
+    // steady-state throughput. This implementation opens several parallel downloads
+    // from Cloudflare, ignores the slow-start warm-up window, and reports the
+    // sustained (and peak) aggregate throughput.
+    const PARALLEL = 6;                       // parallel connections
+    const CHUNK_BYTES = 25000000;             // 25MB per request (within Cloudflare's cap)
+    const MAX_MS = 12000;                      // hard stop
+    const WARMUP_MS = 2500;                    // ignore TCP slow-start ramp
+    const MAX_TOTAL_BYTES = 300 * 1024 * 1024; // safety cap for very fast links
+    const url = `https://speed.cloudflare.com/__down?bytes=${CHUNK_BYTES}`;
 
-        const req = https.get(testUrl, { headers: { 'User-Agent': 'NetworkDetector/1.0' } }, (resp) => {
-            if (resp.statusCode !== 200) {
-                return resolve({
-                    success: false,
-                    error: `HTTP ${resp.statusCode}`,
-                    speedMbps: 0,
-                    duration: 0,
-                    bytesDownloaded: 0
-                });
+    let totalBytes = 0;
+    let warmupBytes = null;
+    let warmupTime = null;
+    let peakMbps = 0;
+    let lastBytes = 0;
+    let lastTime = 0;
+    const samples = [];   // instantaneous throughput samples (Mbps) after warm-up
+    const active = new Set();
+    const start = Date.now();
+
+    return new Promise((resolve) => {
+        let done = false;
+        const finish = (errMsg) => {
+            if (done) return;
+            done = true;
+            clearTimeout(stopTimer);
+            clearTimeout(warmupTimer);
+            clearInterval(sampler);
+            active.forEach(r => { try { r.destroy(); } catch { /* ignore */ } });
+            const end = Date.now();
+
+            const overallSec = (end - start) / 1000;
+            const overallMbps = overallSec > 0 ? (totalBytes * 8) / (overallSec * 1000000) : 0;
+
+            // Report a trimmed mean of the fastest sustained samples (like Ookla/Fast.com):
+            // discard the slowest 30% of samples (momentary dips) and average the rest.
+            // This reflects the link's real sustained capacity rather than a dip-dragged average.
+            let resultMbps = overallMbps;
+            if (samples.length >= 4) {
+                const sorted = [...samples].sort((a, b) => a - b);
+                const kept = sorted.slice(Math.floor(sorted.length * 0.3));
+                if (kept.length) resultMbps = kept.reduce((a, b) => a + b, 0) / kept.length;
             }
 
-            resp.on('data', (chunk) => {
-                downloadedBytes += chunk.length;
-            });
-
-            resp.on('end', () => {
-                const endTime = Date.now();
-                const durationSeconds = (endTime - startTime) / 1000;
-                const speedMbps = ((downloadedBytes * 8) / (durationSeconds * 1000000)).toFixed(2);
-
-                resolve({
-                    success: true,
-                    speedMbps: parseFloat(speedMbps),
-                    duration: durationSeconds.toFixed(2),
-                    bytesDownloaded: downloadedBytes,
-                    testServer: 'Cloudflare CDN',
-                    timestamp: new Date().toISOString()
-                });
-            });
-        });
-
-        req.setTimeout(30000, () => {
-            req.destroy();
             resolve({
-                success: false,
-                error: 'Timeout (30s)',
-                speedMbps: 0,
-                duration: 0,
-                bytesDownloaded: downloadedBytes
+                success: totalBytes > 0,
+                speedMbps: parseFloat(resultMbps.toFixed(2)),
+                peakMbps: parseFloat(peakMbps.toFixed(2)),
+                avgMbps: parseFloat(overallMbps.toFixed(2)),
+                duration: overallSec.toFixed(2),
+                bytesDownloaded: totalBytes,
+                connections: PARALLEL,
+                testServer: `Cloudflare CDN (${PARALLEL} streams)`,
+                method: 'parallel sustained (trimmed mean)',
+                timestamp: new Date().toISOString(),
+                error: totalBytes > 0 ? undefined : (errMsg || 'No data received')
             });
-        });
+        };
 
-        req.on('error', (err) => {
-            resolve({
-                success: false,
-                error: err.message,
-                speedMbps: 0,
-                duration: 0,
-                bytesDownloaded: downloadedBytes
+        const warmupTimer = setTimeout(() => {
+            warmupBytes = totalBytes;
+            warmupTime = Date.now();
+            lastBytes = totalBytes;
+            lastTime = Date.now();
+        }, WARMUP_MS);
+
+        const stopTimer = setTimeout(() => finish(), MAX_MS);
+
+        // Sample instantaneous throughput every 300ms; capture peak + collect samples
+        const sampler = setInterval(() => {
+            if (warmupTime == null) return;
+            const now = Date.now();
+            const dB = totalBytes - lastBytes;
+            const dT = (now - lastTime) / 1000;
+            if (dT > 0) {
+                const inst = (dB * 8) / (dT * 1000000);
+                samples.push(inst);
+                if (inst > peakMbps) peakMbps = inst;
+            }
+            lastBytes = totalBytes;
+            lastTime = now;
+            if (totalBytes >= MAX_TOTAL_BYTES) finish();
+        }, 300);
+
+        // Each worker fetches 25MB chunks back-to-back until time runs out, so
+        // every stream stays saturated regardless of the link speed.
+        const startWorker = () => {
+            if (done) return;
+            const req = https.get(url, { headers: { 'User-Agent': 'NetworkDetector/1.0', 'Cache-Control': 'no-cache' } }, (resp) => {
+                if (resp.statusCode !== 200) { resp.resume(); active.delete(req); if (!done) setTimeout(startWorker, 150); return; }
+                resp.on('data', (chunk) => { totalBytes += chunk.length; });
+                resp.on('end', () => { active.delete(req); if (!done) startWorker(); });
+                resp.on('error', () => { active.delete(req); if (!done) startWorker(); });
             });
-        });
+            req.on('error', () => { active.delete(req); if (!done) setTimeout(startWorker, 150); });
+            req.setTimeout(MAX_MS + 3000, () => { try { req.destroy(); } catch { /* ignore */ } });
+            active.add(req);
+        };
+
+        for (let i = 0; i < PARALLEL; i++) startWorker();
     });
 }
 

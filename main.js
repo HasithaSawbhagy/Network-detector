@@ -98,7 +98,7 @@ function buildContextMenu() {
 
 function createTray() {
   tray = new Tray(path.join(__dirname, 'assets', 'tray-icon.png'));
-  tray.setToolTip('Network Detector — running in background');
+  tray.setToolTip('Network Detector - running in background');
 
   // Left-click: show/focus dashboard
   tray.on('click', () => {

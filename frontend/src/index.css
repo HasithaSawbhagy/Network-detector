@@ -1179,7 +1179,7 @@ body {
 }
 
 /* ═══════════════════════════════════════════════════════
-   v1.1.0 — Export buttons, Health scores, Wi-Fi analyzer
+   v1.1.0 - Export buttons, Health scores, Wi-Fi analyzer
    ═══════════════════════════════════════════════════════ */
 .export-btn {
   background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%) !important;
@@ -1271,7 +1271,7 @@ body {
   .score-tile.score-overall { grid-column: span 2; }
 }
 
-/* ═════════════ v1.2.0 — Speed/Stability · Route · Trends · WSL ═════════════ */
+/* ═════════════ v1.2.0 - Speed/Stability · Route · Trends · WSL ═════════════ */
 .full-width-card {
   grid-column: 1 / -1;
   background: var(--card-bg);

@@ -26,7 +26,7 @@ let wslCache = null;
 let wslCacheTime = 0;
 
 /**
- * Lightweight WSL detection — lists installed distros only.
+ * Lightweight WSL detection - lists installed distros only.
  * IMPORTANT: `wsl -l -q` does NOT boot any distro, so it never shows the
  * Ubuntu/systemd boot console. Tool availability is checked separately and
  * only on explicit user action (see checkWslTools), because that DOES boot
@@ -112,7 +112,7 @@ async function checkWslTools(force = false) {
 }
 
 /**
- * MTR (My TraceRoute) — best-in-class route analysis.
+ * MTR (My TraceRoute) - best-in-class route analysis.
  * Sends multiple probes per hop and reports per-hop loss %, avg/best/worst latency.
  */
 async function wslMtr(target) {
@@ -187,12 +187,12 @@ async function wslDig(domain) {
         answers: answers.slice(0, 6),
         analysis: hasRrsig
             ? (authenticated ? '✅ DNSSEC signed and validated (AD flag present).' : '⚠️ DNSSEC records present but not validated by your resolver.')
-            : 'ℹ️ Domain is not DNSSEC-signed (common — not necessarily a problem).'
+            : 'ℹ️ Domain is not DNSSEC-signed (common - not necessarily a problem).'
     };
 }
 
 /**
- * Traceroute — Linux UDP-based traceroute (different probe type from Windows tracert,
+ * Traceroute - Linux UDP-based traceroute (different probe type from Windows tracert,
  * reveals hops that filter ICMP but not UDP).
  */
 async function wslTraceroute(target) {
@@ -221,7 +221,7 @@ async function wslTraceroute(target) {
 }
 
 /**
- * Nmap LAN scan — discovers all live hosts on the local subnet using
+ * Nmap LAN scan - discovers all live hosts on the local subnet using
  * multiple probe types (ICMP + TCP), far more thorough than ARP-only.
  */
 async function wslNmapLan(subnet) {
@@ -244,7 +244,7 @@ async function wslNmapLan(subnet) {
             const ipM = raw.match(/\((\d+\.\d+\.\d+\.\d+)\)/);
             const ip = ipM ? ipM[1] : raw;
             const hostname = ipM ? raw.replace(ipM[0], '').trim() : '';
-            current = { ip, hostname: hostname || '—', mac: '—', vendor: '—', latency: null };
+            current = { ip, hostname: hostname || '-', mac: '-', vendor: '-', latency: null };
         }
         if (current) {
             const macM = line.match(/MAC Address: ([0-9A-F:]{17})\s*\((.+)\)/i);
@@ -258,7 +258,7 @@ async function wslNmapLan(subnet) {
 }
 
 /**
- * IPv6 connectivity test — checks if working IPv6 is available.
+ * IPv6 connectivity test - checks if working IPv6 is available.
  */
 async function wslIpv6Test() {
     const wsl = await checkWslTools();
@@ -286,7 +286,7 @@ async function wslIpv6Test() {
 }
 
 /**
- * HTTP header inspection — detects ISP proxy injection, identifies CDN/edge,
+ * HTTP header inspection - detects ISP proxy injection, identifies CDN/edge,
  * and compares response headers for privacy/security issues.
  */
 async function wslHttpInspect(url) {
@@ -310,10 +310,10 @@ async function wslHttpInspect(url) {
     const suspicious = ['x-forwarded-for', 'via', 'x-cache', 'x-squid', 'x-isp', 'x-proxy'].filter(h => headers[h]);
     return {
         available: true, url, status, headers,
-        cdn: headers['server'] || headers['x-served-by'] || headers['x-cache'] || '—',
+        cdn: headers['server'] || headers['x-served-by'] || headers['x-cache'] || '-',
         suspiciousHeaders: suspicious,
         analysis: suspicious.length
-            ? `⚠️ Possible ISP/proxy injection — suspicious headers found: ${suspicious.join(', ')}`
+            ? `⚠️ Possible ISP/proxy injection - suspicious headers found: ${suspicious.join(', ')}`
             : '✅ No proxy/ISP injection headers detected'
     };
 }

@@ -91,10 +91,10 @@ async function boaRealtekRouter(ip, user, pass) {
         cookie = (lr.headers['set-cookie'] || []).map(c => c.split(';')[0]).join('; ');
         // Some firmwares reject bad creds with the login page again
         if (/login\.asp|username|password error|invalid/i.test(lr.raw || '') && !cookie) {
-            throw new Error('Router login failed — check username/password');
+            throw new Error('Router login failed - check username/password');
         }
     } catch (e) {
-        throw new Error('Router login failed — ' + e.message);
+        throw new Error('Router login failed - ' + e.message);
     }
 
     // 2) Scan common Realtek-SDK client/DHCP pages for IP+MAC pairs
@@ -123,7 +123,7 @@ async function boaRealtekRouter(ip, user, pass) {
                     const key = dip + dmac;
                     if (seen.has(key)) continue;
                     seen.add(key);
-                    devices.push({ ip: dip, mac: dmac, hostname: '—', type: '—', connected: true });
+                    devices.push({ ip: dip, mac: dmac, hostname: '-', type: '-', connected: true });
                 }
             }
             if (devices.length) return { brand: 'SLT / Realtek ONT', devices };
@@ -134,7 +134,7 @@ async function boaRealtekRouter(ip, user, pass) {
 
 // ── TP-Link Archer (modern REST API) ───────────────────────────────────────
 async function tplinkArcher(ip, _user, pass) {
-    // Step 1: login — try plain password, then MD5
+    // Step 1: login - try plain password, then MD5
     let stok = null;
     for (const pwd of [pass, createHash('md5').update(pass).digest('hex').toUpperCase()]) {
         try {
@@ -145,7 +145,7 @@ async function tplinkArcher(ip, _user, pass) {
             }
         } catch { /* try next */ }
     }
-    if (!stok) throw new Error('TP-Link login failed — wrong password or unsupported model');
+    if (!stok) throw new Error('TP-Link login failed - wrong password or unsupported model');
 
     const base = `http://${ip}/cgi-bin/luci/;stok=${stok}`;
     const devices = [];
@@ -160,9 +160,9 @@ async function tplinkArcher(ip, _user, pass) {
                 if (!Array.isArray(band)) return;
                 band.forEach(c => {
                     if (c?.mac) devices.push({
-                        ip: c.ip || '—', mac: c.mac,
-                        hostname: c.hostname || c.name || '—',
-                        band: c.band || '—', type: 'Wireless', connected: true
+                        ip: c.ip || '-', mac: c.mac,
+                        hostname: c.hostname || c.name || '-',
+                        band: c.band || '-', type: 'Wireless', connected: true
                     });
                 });
             });
@@ -177,9 +177,9 @@ async function tplinkArcher(ip, _user, pass) {
             if (hosts) {
                 Object.values(hosts).forEach(h => {
                     if (h?.mac) devices.push({
-                        ip: h.ip || '—', mac: h.mac,
-                        hostname: h.hostname || h.name || '—',
-                        type: h.type === 1 ? 'Wireless' : (h.type === 2 ? 'Wired' : '—'),
+                        ip: h.ip || '-', mac: h.mac,
+                        hostname: h.hostname || h.name || '-',
+                        type: h.type === 1 ? 'Wireless' : (h.type === 2 ? 'Wired' : '-'),
                         connected: true
                     });
                 });
@@ -205,7 +205,7 @@ async function asusRouter(ip, user, pass) {
     const raw = dr.body?.get_clientlist || {};
     const devices = Object.values(raw)
         .filter(c => c?.mac)
-        .map(c => ({ ip: c.ip || '—', mac: c.mac, hostname: c.name || '—', type: c.type === '1' ? 'Wireless' : 'Wired', connected: c.isOnline === '1' }));
+        .map(c => ({ ip: c.ip || '-', mac: c.mac, hostname: c.name || '-', type: c.type === '1' ? 'Wireless' : 'Wired', connected: c.isOnline === '1' }));
     return { brand: 'ASUS', devices };
 }
 
@@ -225,7 +225,7 @@ async function genericScrape(ip, user, pass) {
     ];
     const devices = [];
     const seen = new Set();
-    // Match an IP followed (within a short span) by a MAC address — covers most
+    // Match an IP followed (within a short span) by a MAC address - covers most
     // HTML table layouts regardless of column order.
     const rowRe = /(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\s\S]{0,160}?([0-9A-Fa-f]{2}(?:[:-][0-9A-Fa-f]{2}){5})/g;
 
@@ -242,7 +242,7 @@ async function genericScrape(ip, user, pass) {
                 const key = dip + dmac;
                 if (seen.has(key)) continue;
                 seen.add(key);
-                devices.push({ ip: dip, mac: dmac, hostname: '—', type: '—', connected: true });
+                devices.push({ ip: dip, mac: dmac, hostname: '-', type: '-', connected: true });
             }
             if (devices.length) return { brand: 'Broadband ONT (generic)', devices };
         } catch { /* try next path */ }
@@ -298,7 +298,7 @@ async function getRouterDevices(ip, user, pass) {
         }
     }
 
-    // Nothing worked — be honest and point the user to the working Open Admin Page
+    // Nothing worked - be honest and point the user to the working Open Admin Page
     result.success = false;
     result.error = `Automatic device fetch isn't supported for this router (${result.brand}).`;
     result.tip = 'Click "Open Admin Page", then go to the LAN or DHCP section to see connected devices. The nmap scan under WSL Tools also discovers most devices.';

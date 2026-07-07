@@ -586,7 +586,7 @@ function App() {
       report += `TLS Handshake:       ${p.tlsHandshakeMs ?? 'N/A'} ms\n`;
       report += `Time To First Byte:  ${p.ttfbMs ?? 'N/A'} ms\n`;
       report += `Total:               ${p.totalMs ?? 'N/A'} ms\n`;
-      report += `Download:            ${p.downloadMbps ?? 'N/A'} Mbps\n`;
+      report += `Single-stream:       ${p.downloadMbps ?? 'N/A'} Mbps  (one connection - lower than line speed; see CDN Speed Test below)\n`;
       if (speedDiag.bufferbloat) {
         report += `Bufferbloat Grade:   ${speedDiag.bufferbloat.grade}: ${speedDiag.bufferbloat.verdict}\n`;
         report += `  Idle Latency:      ${speedDiag.bufferbloat.idleLatency} ms\n`;
@@ -626,8 +626,10 @@ function App() {
     }
 
     if (cdnSpeedTest) {
-      report += `── CDN SPEED TEST ─────────────────────────────────────\n`;
-      report += `Download Speed:      ${cdnSpeedTest.speedMbps} Mbps\n`;
+      report += `── CDN SPEED TEST (multi-stream) ──────────────────────\n`;
+      report += `Download Speed:      ${cdnSpeedTest.speedMbps} Mbps  (${cdnSpeedTest.connections || 6} parallel streams, sustained)\n`;
+      if (cdnSpeedTest.peakMbps) report += `Peak:                ${cdnSpeedTest.peakMbps} Mbps\n`;
+      report += `Data Downloaded:     ${(cdnSpeedTest.bytesDownloaded / 1000000).toFixed(1)} MB\n`;
       report += `Duration:            ${cdnSpeedTest.duration}s\n\n`;
     }
 
@@ -1220,10 +1222,12 @@ function App() {
                 <StatusCard title="True CDN Speed Test" className="stagger-2"
                   data={[
                     cdnSpeedTest ? { label: 'Download Speed', value: `${cdnSpeedTest.speedMbps} Mbps`, className: 'highlight' } : null,
+                    cdnSpeedTest && cdnSpeedTest.peakMbps ? { label: 'Peak', value: `${cdnSpeedTest.peakMbps} Mbps`, className: 'success' } : null,
                     cdnSpeedTest ? { label: 'Test Server', value: cdnSpeedTest.testServer } : null,
                     cdnSpeedTest ? { label: 'Duration', value: `${cdnSpeedTest.duration}s` } : null,
-                    cdnSpeedTest ? { label: 'Data Downloaded', value: `${(cdnSpeedTest.bytesDownloaded / 1000000).toFixed(2)} MB` } : null,
+                    cdnSpeedTest ? { label: 'Data Downloaded', value: `${(cdnSpeedTest.bytesDownloaded / 1000000).toFixed(1)} MB` } : null,
                     cdnSpeedTest ? { label: 'Status', value: cdnSpeedTest.success ? '✓ Success' : `✗ ${cdnSpeedTest.error}`, className: cdnSpeedTest.success ? 'success' : 'error' } : null,
+                    { label: 'Note', value: 'Uses 6 parallel streams (sustained trimmed mean). Speeds vary with Wi-Fi band, distance, and server load.' },
                     { label: '', value: (<button className="cdn-test-btn" onClick={runCdnSpeedTest} disabled={cdnTestLoading}>{cdnTestLoading ? 'Testing...' : (cdnSpeedTest ? 'Run Again' : 'Run CDN Speed Test')}</button>) },
                   ].filter(Boolean)}
                 />
@@ -1518,9 +1522,10 @@ function App() {
                         <div className="phase-pill"><span className="phase-num">{speedDiag.phases.ttfbMs}</span><span className="phase-lbl">First byte ms</span></div>
                       </div>
                       <div className="score-grid" style={{ marginTop: '16px' }}>
-                        <div className="score-tile"><div className="score-tile-val highlight">{speedDiag.phases.downloadMbps}</div><div className="score-tile-lbl">Download Mbps</div></div>
+                        <div className="score-tile"><div className="score-tile-val highlight">{speedDiag.phases.downloadMbps}</div><div className="score-tile-lbl">Single-stream Mbps</div></div>
                         <div className="score-tile"><div className="score-tile-val">{speedDiag.phases.totalMs}</div><div className="score-tile-lbl">Total ms</div></div>
                       </div>
+                      <p className="diag-sub" style={{ marginTop: '10px' }}>Single-stream throughput is limited by one TCP connection and is normally lower than your line speed. For your real download speed, use the multi-stream <strong>True CDN Speed Test</strong> on the ISP Truth tab.</p>
                     </>
                   )}
                   {speedDiag?.phases?.error && <p className="diag-error">Speed test failed: {speedDiag.phases.error}</p>}
