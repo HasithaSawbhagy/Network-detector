@@ -71,7 +71,7 @@ function App() {
   const [healthBreakdown, setHealthBreakdown] = useState(null);
   const [healthLoading, setHealthLoading] = useState(false);
 
-  // v1.2.0 — speed phases, route trace, stability, trends, WSL
+  // v1.2.0 - speed phases, route trace, stability, trends, WSL
   const [speedDiag, setSpeedDiag] = useState(null);
   const [speedDiagLoading, setSpeedDiagLoading] = useState(false);
   const [routeTrace, setRouteTrace] = useState(null);
@@ -302,11 +302,11 @@ function App() {
       : 0;
     const lossPct = (drops / samples.length) * 100;
     let label, cls;
-    if (drops === 0 && jitter < 15) { label = 'Excellent — rock solid'; cls = 'success'; }
-    else if (lossPct <= 2 && jitter < 30) { label = 'Good — stable'; cls = 'highlight'; }
-    else if (drops === 0 && lossPct < 1) { label = 'Fair — high jitter (no drops)'; cls = ''; }
-    else if (lossPct <= 8) { label = 'Poor — occasional drops'; cls = ''; }
-    else { label = 'Unstable — frequent drops'; cls = 'error'; }
+    if (drops === 0 && jitter < 15) { label = 'Excellent: rock solid'; cls = 'success'; }
+    else if (lossPct <= 2 && jitter < 30) { label = 'Good: stable'; cls = 'highlight'; }
+    else if (drops === 0 && lossPct < 1) { label = 'Fair: high jitter (no drops)'; cls = ''; }
+    else if (lossPct <= 8) { label = 'Poor: occasional drops'; cls = ''; }
+    else { label = 'Unstable: frequent drops'; cls = 'error'; }
     setStabilityResult({
       total: samples.length, drops, reconnects,
       avg: avg.toFixed(0), min, max, jitter: jitter.toFixed(1),
@@ -318,7 +318,7 @@ function App() {
     fetch(`${API_BASE}/wsl-status`).then(r => r.json()).then(setWslStatus).catch(() => {});
   };
 
-  // Boots the WSL distro to check installed Linux tools — only on explicit click.
+  // Boots the WSL distro to check installed Linux tools - only on explicit click.
   const checkWslTools = (force = false) => {
     setWslToolsLoading(true);
     fetch(`${API_BASE}/wsl-tools${force ? '?force=true' : ''}`).then(r => r.json())
@@ -513,7 +513,7 @@ function App() {
         report += `SSID:                ${wifiAnalysis.ssid || 'N/A'}\n`;
         report += `Band / Channel:      ${wifiAnalysis.band || 'N/A'} / ${wifiAnalysis.channel || 'N/A'}\n`;
         if (wifiCapabilities?.isDualBand) {
-          report += `Adapter Capability:  Dual-band (${wifiCapabilities.supportedBands.join(' + ')}) — ${wifiAnalysis.band === '2.4 GHz' ? '⚠ Currently on slower 2.4 GHz band' : '✓ On fast 5 GHz band'}\n`;
+          report += `Adapter Capability:  Dual-band (${wifiCapabilities.supportedBands.join(' + ')}) - ${wifiAnalysis.band === '2.4 GHz' ? '⚠ Currently on slower 2.4 GHz band' : '✓ On fast 5 GHz band'}\n`;
         }
         report += `RSSI:                ${wifiAnalysis.rssi || 'N/A'} (${wifiAnalysis.signalPercent || 'N/A'})\n`;
         report += `Standard:            ${wifiAnalysis.standard || 'N/A'}\n`;
@@ -530,14 +530,14 @@ function App() {
           else if (rssiNum >= -60) sigLabel = 'Very Good';
           else if (rssiNum >= -67) sigLabel = 'Good';
           else if (rssiNum >= -70) sigLabel = 'Fair';
-          else sigLabel = 'Poor — move closer to router';
+          else sigLabel = 'Poor: move closer to router';
           report += `Signal Strength:     ${sigLabel} (${wifiAnalysis.rssi})\n`;
         }
         if (wifiAnalysis.band === '2.4 GHz') {
           const ch = parseInt(wifiAnalysis.channel);
           const nonOverlap = [1, 6, 11];
           if (!nonOverlap.includes(ch)) {
-            report += `Channel Note:        ⚠ Channel ${ch} overlaps with neighbouring channels. Channels 1, 6, or 11 are non-overlapping — consider changing in router settings.\n`;
+            report += `Channel Note:        ⚠ Channel ${ch} overlaps with neighbouring channels. Channels 1, 6, or 11 are non-overlapping. Consider changing in router settings.\n`;
           }
         }
       }
@@ -547,7 +547,7 @@ function App() {
     if (throughput || externalPing || dnsTime) {
       report += `── LIVE PERFORMANCE ───────────────────────────────────\n`;
       if (throughput) report += `Throughput:          ↓ ${throughput.downloadMbps ?? 'N/A'} Mbps / ↑ ${throughput.uploadMbps ?? 'N/A'} Mbps\n`;
-      report += `  (This is the current NIC transfer rate, not a speed test — run Speed & Stability for true throughput.)\n`;
+      report += `  (This is the current NIC transfer rate, not a speed test. Run Speed & Stability for true throughput.)\n`;
       if (externalPing) report += `Internet Latency:    ${externalPing.latency || 'N/A'} (${externalPing.loss || 'N/A'})\n`;
       if (dnsTime) report += `DNS Resolution:      ${dnsTime.time || dnsTime.latency || 'N/A'}\n`;
       report += `\n`;
@@ -588,7 +588,7 @@ function App() {
       report += `Total:               ${p.totalMs ?? 'N/A'} ms\n`;
       report += `Download:            ${p.downloadMbps ?? 'N/A'} Mbps\n`;
       if (speedDiag.bufferbloat) {
-        report += `Bufferbloat Grade:   ${speedDiag.bufferbloat.grade} — ${speedDiag.bufferbloat.verdict}\n`;
+        report += `Bufferbloat Grade:   ${speedDiag.bufferbloat.grade}: ${speedDiag.bufferbloat.verdict}\n`;
         report += `  Idle Latency:      ${speedDiag.bufferbloat.idleLatency} ms\n`;
         report += `  Loaded Latency:    ${speedDiag.bufferbloat.loadedLatency} ms (+${speedDiag.bufferbloat.increase} ms)\n`;
       }
@@ -643,12 +643,12 @@ function App() {
       dnsBench.results.forEach(r => {
         let t = r.status === 'ok' && r.time != null ? `${r.time} ms` : 'timeout';
         // Values over 200 ms from a parallel test are likely first-run cache misses
-        // or resolver slowness — annotate so the reader isn't misled
+        // or resolver slowness - annotate so the reader isn't misled
         if (r.status === 'ok' && r.time > 200) t += ' ⚠ slow (possible cache miss or resolver congestion)';
         report += `  ${(r.name || '').padEnd(12)} ${(r.ip || '').padEnd(16)} ${t.padStart(10)}\n`;
       });
       if (dnsBench.fastest) {
-        report += `Fastest:             ${dnsBench.fastest.name} (${dnsBench.fastest.ip}) — ${dnsBench.fastest.time} ms\n`;
+        report += `Fastest:             ${dnsBench.fastest.name} (${dnsBench.fastest.ip}) - ${dnsBench.fastest.time} ms\n`;
       }
       report += `\n`;
     }
@@ -727,37 +727,39 @@ function App() {
   };
 
   useEffect(() => {
-    // Phase 1 — light, essential data fires immediately
+    // Phase 1 - instant, zero-subprocess calls only (basic stats + public IP + toolbar)
     fetchBasicStats();
-    fetchPings();
     fetchPublicIp();
     fetchThroughput();
     fetchToolbarStatus();
-    fetchActiveInterface();
     fetchWslStatus();
     fetchWifiCapabilities();
 
-    // Phase 2 — heavier scans are staggered so a cold start doesn't spawn
-    // a dozen ping/netsh/tracert processes at once (which can saturate the
-    // browser's 6-connection limit and make early actions appear frozen).
+    // Phase 2 - first ping wave + active interface (light subprocess usage)
     const t1 = setTimeout(() => {
-      fetchArpCount();
+      fetchPings();          // gateway + external ping + DNS time
+      fetchActiveInterface();
       fetchWifiAnalysis();
       fetchDeviceHealth();
-      fetchGatewayHealth();
-    }, 1500);
+    }, 800);
+
+    // Phase 3 - medium scans
     const t2 = setTimeout(() => {
+      fetchArpCount();
+      fetchGatewayHealth();
       fetchGlobalPing();
       fetchDnsHijack();
       fetchMitmCheck();
       fetchDevices();
-    }, 3500);
+    }, 2500);
+
+    // Phase 4 - heavy security scans last so the UI is already responsive
     const t3 = setTimeout(() => {
       fetchSecurityScan();
       fetchArpSpoof();
       fetchDnsLeak();
       fetchWifiAudit();
-    }, 6000);
+    }, 5000);
 
     const throughputInterval = setInterval(fetchThroughput, 1000);
     const basicInterval = setInterval(fetchBasicStats, 5000);
@@ -1031,8 +1033,8 @@ function App() {
                   data={[
                     { label: 'Public IPv4', value: publicIp ? publicIp.ip : 'Loading...', className: 'highlight' },
                     { label: 'ISP / ASN', value: publicIp?.org || 'Loading...' },
-                    { label: 'Location', value: publicIp?.city && publicIp?.country ? `${publicIp.city}, ${publicIp.country}` : (publicIp ? '—' : 'Loading...') },
-                    { label: 'Timezone', value: publicIp?.timezone || (publicIp ? '—' : 'Loading...') },
+                    { label: 'Location', value: publicIp?.city && publicIp?.country ? `${publicIp.city}, ${publicIp.country}` : (publicIp ? 'N/A' : 'Loading...') },
+                    { label: 'Timezone', value: publicIp?.timezone || (publicIp ? 'N/A' : 'Loading...') },
                   ]}
                 />
                 <StatusCard title="Connection Health" className="stagger-7"
@@ -1099,7 +1101,7 @@ function App() {
                     ]
                   }
                 />
-                {/* Nearby Networks — placed before the full-width notice so it fills the grid gap */}
+                {/* Nearby Networks - placed before the full-width notice so it fills the grid gap */}
                 {wifiScan && wifiScan.networks?.length > 0 && (
                   <StatusCard title={`Nearby Networks (Top ${Math.min(8, wifiScan.networks.length)})`} className="stagger-4"
                     data={wifiScan.networks.slice(0, 8).map(n => ({
@@ -1351,11 +1353,11 @@ function App() {
                 <div className="devices-toolbar">
                   <div className="devices-summary">
                     <div className="summary-pill">
-                      <span className="summary-num">{devices?.totalCount ?? '—'}</span>
+                      <span className="summary-num">{devices?.totalCount ?? 'N/A'}</span>
                       <span className="summary-lbl">Devices</span>
                     </div>
                     <div className="summary-pill">
-                      <span className="summary-num">{devices?.gateway || '—'}</span>
+                      <span className="summary-num">{devices?.gateway || 'N/A'}</span>
                       <span className="summary-lbl">Gateway</span>
                     </div>
                     {arpSpoof && (
@@ -1397,7 +1399,7 @@ function App() {
 
                 {/* ── Router Admin Panel ── */}
                 <div className="full-width-card" style={{ marginTop: '1.5rem' }}>
-                  <h3 className="diag-title">🔧 Router Admin — Deep Device Scan</h3>
+                  <h3 className="diag-title">Router Admin: Deep Device Scan</h3>
                   <p className="diag-sub" style={{ marginBottom: '12px' }}>
                     Enter your router admin credentials to fetch the complete connected device list directly from the router (more thorough than ARP). Credentials are saved locally on this device only.
                   </p>
@@ -1410,25 +1412,25 @@ function App() {
                   </div>
                   {routerDevicesLoading && <div className="loader-inline"><div className="loader"></div><span>Connecting to router…</span></div>}
                   {routerDevices && !routerDevices.success && (
-                    <p className="diag-error">{routerDevices.error || 'Failed'}{routerDevices.tip ? ` — ${routerDevices.tip}` : ''}</p>
+                    <p className="diag-error">{routerDevices.error || 'Failed'}{routerDevices.tip ? `. ${routerDevices.tip}` : ''}</p>
                   )}
                   {routerDevices?.success && routerDevices.devices?.length > 0 && (
                     <>
-                      <p className="route-analysis">✅ {routerDevices.brand} — {routerDevices.devices.length} device{routerDevices.devices.length !== 1 ? 's' : ''} found</p>
+                      <p className="route-analysis">✅ {routerDevices.brand}: {routerDevices.devices.length} device{routerDevices.devices.length !== 1 ? 's' : ''} found</p>
                       <div className="route-table" style={{ marginTop: '8px' }}>
                         <div className="route-head"><span className="rh-ip">IP</span><span className="rh-isp">MAC / Vendor</span><span className="rh-lat">Type</span></div>
                         {routerDevices.devices.map((d, i) => (
                           <div className="route-line" key={i}>
-                            <span className="rh-ip">{d.ip}{d.hostname !== '—' ? ` (${d.hostname})` : ''}</span>
-                            <span className="rh-isp">{d.mac !== '—' ? d.mac : '—'}</span>
-                            <span className="rh-lat">{d.type || '—'}</span>
+                            <span className="rh-ip">{d.ip}{d.hostname !== 'N/A' ? ` (${d.hostname})` : ''}</span>
+                            <span className="rh-isp">{d.mac !== 'N/A' ? d.mac : 'N/A'}</span>
+                            <span className="rh-lat">{d.type || 'N/A'}</span>
                           </div>
                         ))}
                       </div>
                     </>
                   )}
                   {routerDevices?.success && routerDevices.devices?.length === 0 && (
-                    <p className="diag-placeholder">Router responded but returned no device data. Model may use a different API — try opening the admin page manually.</p>
+                    <p className="diag-placeholder">Router responded but returned no device data. Model may use a different API. Try opening the admin page manually.</p>
                   )}
                 </div>
               </div>
@@ -1497,7 +1499,7 @@ function App() {
                   <div className="diag-card-header">
                     <div>
                       <h3 className="diag-title">Connection Phase Breakdown</h3>
-                      <p className="diag-sub">Times each stage of a real download — DNS, TCP, TLS, first byte — to reveal exactly where slowness comes from.</p>
+                      <p className="diag-sub">Times each stage of a real download: DNS, TCP, TLS, first byte. Reveals exactly where slowness comes from.</p>
                     </div>
                     <button className="cdn-test-btn" onClick={runSpeedDiagnostics} disabled={speedDiagLoading}>
                       {speedDiagLoading ? 'Testing…' : 'Run Speed Test'}
@@ -1527,7 +1529,7 @@ function App() {
                 {speedDiag?.bufferbloat && !speedDiag.bufferbloat.error && (
                   <StatusCard title="Bufferbloat (Latency Under Load)" className="stagger-2"
                     data={[
-                      { label: 'Grade', value: `${speedDiag.bufferbloat.grade} — ${speedDiag.bufferbloat.verdict}`, className: speedDiag.bufferbloat.grade === 'A' || speedDiag.bufferbloat.grade === 'B' ? 'success' : speedDiag.bufferbloat.grade === 'F' ? 'error' : 'highlight' },
+                      { label: 'Grade', value: `${speedDiag.bufferbloat.grade}: ${speedDiag.bufferbloat.verdict}`, className: speedDiag.bufferbloat.grade === 'A' || speedDiag.bufferbloat.grade === 'B' ? 'success' : speedDiag.bufferbloat.grade === 'F' ? 'error' : 'highlight' },
                       { label: 'Idle Latency', value: `${speedDiag.bufferbloat.idleLatency} ms` },
                       { label: 'Latency Under Load', value: `${speedDiag.bufferbloat.loadedLatency} ms` },
                       { label: 'Increase', value: `+${speedDiag.bufferbloat.increase} ms`, className: parseFloat(speedDiag.bufferbloat.increase) > 100 ? 'error' : '' },
@@ -1555,7 +1557,7 @@ function App() {
                   )}
                   {stabilityResult && (
                     <div className="score-grid" style={{ marginTop: '16px' }}>
-                      <div className="score-tile"><div className={`score-tile-val ${stabilityResult.cls}`}>{stabilityResult.label.split(' — ')[0]}</div><div className="score-tile-lbl">{stabilityResult.label.split(' — ')[1] || 'Verdict'}</div></div>
+                      <div className="score-tile"><div className={`score-tile-val ${stabilityResult.cls}`}>{stabilityResult.label.split(': ')[0]}</div><div className="score-tile-lbl">{stabilityResult.label.split(': ')[1] || 'Verdict'}</div></div>
                       <div className="score-tile"><div className="score-tile-val">{stabilityResult.drops}</div><div className="score-tile-lbl">Drops</div></div>
                       <div className="score-tile"><div className="score-tile-val">{stabilityResult.reconnects}</div><div className="score-tile-lbl">Reconnects</div></div>
                       <div className="score-tile"><div className="score-tile-val">{stabilityResult.avg}</div><div className="score-tile-lbl">Avg ms</div></div>
@@ -1574,7 +1576,7 @@ function App() {
                   <div className="diag-card-header">
                     <div>
                       <h3 className="diag-title">Hop-by-Hop Route Analysis</h3>
-                      <p className="diag-sub">Traces the path your traffic takes to a destination and geolocates each public hop, so you can see where latency builds up — your network, your ISP, or beyond.</p>
+                      <p className="diag-sub">Traces the path your traffic takes to a destination and geolocates each public hop, so you can see where latency builds up - your network, your ISP, or beyond.</p>
                     </div>
                     <div className="route-controls">
                       <input className="route-input" value={routeTarget} onChange={e => setRouteTarget(e.target.value)} placeholder="8.8.8.8 or host" />
@@ -1599,7 +1601,7 @@ function App() {
                             <span className="rh-hop">{h.hop}</span>
                             <span className="rh-ip">{h.ip}</span>
                             <span className={`rh-lat ${h.avg && parseFloat(h.avg) > 100 ? 'warn' : ''}`}>{h.timeout ? '✕ timeout' : `${h.avg} ms`}</span>
-                            <span className="rh-isp">{h.isp || (h.timeout ? '—' : '…')}{h.city ? ` · ${h.city}` : ''}{h.country ? `, ${h.country}` : ''}</span>
+                            <span className="rh-isp">{h.isp || (h.timeout ? 'N/A' : '…')}{h.city ? ` · ${h.city}` : ''}{h.country ? `, ${h.country}` : ''}</span>
                           </div>
                         ))}
                       </div>
@@ -1648,11 +1650,11 @@ function App() {
                   data={[
                     { label: 'WSL Installed', value: wslStatus?.installed ? '✓ Yes' : '✗ No', className: wslStatus?.installed ? 'success' : 'error' },
                     { label: 'Active Distro', value: wslStatus?.distro || 'N/A', className: 'highlight' },
-                    { label: 'mtr', value: !wslStatus?.toolsChecked ? '—' : (wslStatus?.tools?.mtr ? '✓' : '✗'), className: wslStatus?.tools?.mtr ? 'success' : '' },
-                    { label: 'dig', value: !wslStatus?.toolsChecked ? '—' : (wslStatus?.tools?.dig ? '✓' : '✗'), className: wslStatus?.tools?.dig ? 'success' : '' },
-                    { label: 'traceroute', value: !wslStatus?.toolsChecked ? '—' : (wslStatus?.tools?.traceroute ? '✓' : '✗'), className: wslStatus?.tools?.traceroute ? 'success' : '' },
-                    { label: 'nmap', value: !wslStatus?.toolsChecked ? '—' : (wslStatus?.tools?.nmap ? '✓' : '✗'), className: wslStatus?.tools?.nmap ? 'success' : '' },
-                    { label: 'curl', value: !wslStatus?.toolsChecked ? '—' : (wslStatus?.tools?.curl ? '✓' : '✗'), className: wslStatus?.tools?.curl ? 'success' : '' },
+                    { label: 'mtr', value: !wslStatus?.toolsChecked ? 'N/A' : (wslStatus?.tools?.mtr ? '✓' : '✗'), className: wslStatus?.tools?.mtr ? 'success' : '' },
+                    { label: 'dig', value: !wslStatus?.toolsChecked ? 'N/A' : (wslStatus?.tools?.dig ? '✓' : '✗'), className: wslStatus?.tools?.dig ? 'success' : '' },
+                    { label: 'traceroute', value: !wslStatus?.toolsChecked ? 'N/A' : (wslStatus?.tools?.traceroute ? '✓' : '✗'), className: wslStatus?.tools?.traceroute ? 'success' : '' },
+                    { label: 'nmap', value: !wslStatus?.toolsChecked ? 'N/A' : (wslStatus?.tools?.nmap ? '✓' : '✗'), className: wslStatus?.tools?.nmap ? 'success' : '' },
+                    { label: 'curl', value: !wslStatus?.toolsChecked ? 'N/A' : (wslStatus?.tools?.curl ? '✓' : '✗'), className: wslStatus?.tools?.curl ? 'success' : '' },
                   ]}
                 />
 
@@ -1680,7 +1682,7 @@ function App() {
                   <div className="full-width-card stagger-3">
                     <div className="diag-card-header">
                       <div>
-                        <h3 className="diag-title">mtr — Live Route Quality</h3>
+                        <h3 className="diag-title">mtr - Live Route Quality</h3>
                         <p className="diag-sub">Combines traceroute + ping to show per-hop packet loss and latency. The best tool for proving where loss occurs.</p>
                       </div>
                       <div className="route-controls">
@@ -1715,7 +1717,7 @@ function App() {
                   <div className="full-width-card stagger-4">
                     <div className="diag-card-header">
                       <div>
-                        <h3 className="diag-title">dig — DNSSEC Validation</h3>
+                        <h3 className="diag-title">dig - DNSSEC Validation</h3>
                         <p className="diag-sub">Checks whether DNS answers are cryptographically signed (DNSSEC), proving they weren't tampered with in transit.</p>
                       </div>
                       <div className="route-controls">
@@ -1744,7 +1746,7 @@ function App() {
                   <div className="full-width-card stagger-5">
                     <div className="diag-card-header">
                       <div>
-                        <h3 className="diag-title">traceroute — UDP Path Analysis</h3>
+                        <h3 className="diag-title">traceroute - UDP Path Analysis</h3>
                         <p className="diag-sub">Uses UDP probes (not ICMP like Windows tracert). Reveals hops that block ICMP but allow UDP traffic.</p>
                       </div>
                       <div className="route-controls">
@@ -1774,8 +1776,8 @@ function App() {
                   <div className="full-width-card stagger-5">
                     <div className="diag-card-header">
                       <div>
-                        <h3 className="diag-title">nmap — LAN Device Discovery</h3>
-                        <p className="diag-sub">Scans the local subnet using multiple probe types. More thorough than the ARP-based scan — discovers phones, TVs, and clients with isolation enabled.</p>
+                        <h3 className="diag-title">nmap - LAN Device Discovery</h3>
+                        <p className="diag-sub">Scans the local subnet using multiple probe types. More thorough than the ARP-based scan - discovers phones, TVs, and clients with isolation enabled.</p>
                       </div>
                       <div className="route-controls">
                         <input className="route-input" value={wslNmapSubnet} onChange={e => setWslNmapSubnet(e.target.value)} placeholder="auto (gateway /24)" style={{ width: '180px' }} />
@@ -1788,9 +1790,9 @@ function App() {
                         <div className="route-head"><span className="rh-ip">IP</span><span className="rh-isp">MAC / Vendor</span><span className="rh-lat">Latency</span></div>
                         {wslNmapData.hosts.map((h, i) => (
                           <div className="route-line" key={i}>
-                            <span className="rh-ip">{h.ip}{h.hostname !== '—' ? ` (${h.hostname})` : ''}</span>
-                            <span className="rh-isp">{h.mac !== '—' ? `${h.mac} — ${h.vendor}` : h.vendor}</span>
-                            <span className="rh-lat">{h.latency || '—'}</span>
+                            <span className="rh-ip">{h.ip}{h.hostname !== 'N/A' ? ` (${h.hostname})` : ''}</span>
+                            <span className="rh-isp">{h.mac !== 'N/A' ? `${h.mac} - ${h.vendor}` : h.vendor}</span>
+                            <span className="rh-lat">{h.latency || 'N/A'}</span>
                           </div>
                         ))}
                       </div>
@@ -1806,7 +1808,7 @@ function App() {
                     <div className="diag-card-header">
                       <div>
                         <h3 className="diag-title">IPv6 Connectivity Test</h3>
-                        <p className="diag-sub">Checks whether your connection supports IPv6 — required for modern services and better privacy than IPv4-only NAT.</p>
+                        <p className="diag-sub">Checks whether your connection supports IPv6 - required for modern services and better privacy than IPv4-only NAT.</p>
                       </div>
                       <button className="cdn-test-btn" onClick={runWslIpv6} disabled={wslIpv6Loading}>{wslIpv6Loading ? 'Testing…' : 'Test IPv6'}</button>
                     </div>
@@ -1842,8 +1844,8 @@ function App() {
                       <>
                         <p className="route-analysis">{wslHttpData.analysis}</p>
                         <div className="score-grid" style={{ marginTop: '8px' }}>
-                          <div className="score-tile"><div className="score-tile-val highlight">{wslHttpData.status || '—'}</div><div className="score-tile-lbl">HTTP Status</div></div>
-                          <div className="score-tile"><div className="score-tile-val">{wslHttpData.cdn || '—'}</div><div className="score-tile-lbl">Server / CDN</div></div>
+                          <div className="score-tile"><div className="score-tile-val highlight">{wslHttpData.status || 'N/A'}</div><div className="score-tile-lbl">HTTP Status</div></div>
+                          <div className="score-tile"><div className="score-tile-val">{wslHttpData.cdn || 'N/A'}</div><div className="score-tile-lbl">Server / CDN</div></div>
                           <div className="score-tile"><div className={`score-tile-val ${wslHttpData.suspiciousHeaders?.length ? 'error' : 'success'}`}>{wslHttpData.suspiciousHeaders?.length || 0}</div><div className="score-tile-lbl">Suspicious headers</div></div>
                         </div>
                         {Object.keys(wslHttpData.headers || {}).length > 0 && (
@@ -1941,9 +1943,9 @@ function GuideView({ wslStatus }) {
   const sections = [
     {
       icon: '⊞', title: 'Overview Tab',
-      desc: 'A live snapshot of your current network state — refreshes every 1–5 seconds.',
+      desc: 'A live snapshot of your current network state - refreshes every 1–5 seconds.',
       items: [
-        { name: 'SSID / BSSID', what: 'Name of the Wi-Fi network and the router\'s MAC address.', how: 'BSSID is unique per access point — useful for mesh networks.' },
+        { name: 'SSID / BSSID', what: 'Name of the Wi-Fi network and the router\'s MAC address.', how: 'BSSID is unique per access point - useful for mesh networks.' },
         { name: 'Signal Quality', what: 'Strength of the Wi-Fi signal (0–100%).', how: '✓ 70%+ Excellent · ⚠ 40–70% OK · ✗ <40% Poor (move closer to router).' },
         { name: 'Link Speed', what: 'Theoretical maximum speed of your Wi-Fi link.', how: 'Should be close to your router\'s advertised speed. If much lower, signal is weak or older Wi-Fi standard.' },
         { name: 'Download/Upload (Live)', what: 'Real-time bytes/second on your active interface (not a speed test).', how: 'Shows current usage. For true speed, use "CDN Speed Test" on ISP Truth tab.' },
@@ -1955,20 +1957,20 @@ function GuideView({ wslStatus }) {
     },
     {
       icon: '⌖', title: 'ISP Truth Tab',
-      desc: 'Proves whether your ISP\'s international routing is the bottleneck — not your Wi-Fi.',
+      desc: 'Proves whether your ISP\'s international routing is the bottleneck - not your Wi-Fi.',
       items: [
-        { name: 'Multi-Region Latency', what: 'Pings local exchange (first ISP hop), Singapore, US East, US West.', how: 'If local exchange is fast (<20ms) but Singapore/US is slow (>200ms with loss), ISP\'s international routing is the problem — not your connection.' },
+        { name: 'Multi-Region Latency', what: 'Pings local exchange (first ISP hop), Singapore, US East, US West.', how: 'If local exchange is fast (<20ms) but Singapore/US is slow (>200ms with loss), ISP\'s international routing is the problem - not your connection.' },
         { name: 'CDN Speed Test', what: 'Downloads 10MB from Cloudflare\'s global CDN to measure real Mbps.', how: 'Compare to your plan: should reach ~80% of advertised speed. Lower means throttling or congestion.' },
         { name: 'DNS Hijacking Detector', what: 'Resolves google.com via system DNS and Cloudflare DoH, compares answers.', how: 'If IPs differ ⚠️ ISP/router is intercepting DNS. If DoH is much faster, your DNS is slow.' },
       ]
     },
     {
       icon: '📶', title: 'Wi-Fi Analyzer Tab',
-      desc: 'Professional wireless metrics — outperforms many commercial Wi-Fi analyzers.',
+      desc: 'Professional wireless metrics - outperforms many commercial Wi-Fi analyzers.',
       items: [
         { name: 'Band (2.4 / 5 GHz)', what: 'Which radio frequency you are connected on.', how: '5 GHz is faster and less congested for nearby devices. 2.4 GHz reaches farther but is crowded. Prefer 5 GHz when close to the router.' },
         { name: 'RSSI (dBm)', what: 'Raw signal strength in decibels (derived from signal %).', how: '✓ > -50 Excellent · -60 Good · -70 Fair · ✗ < -80 Poor/unstable. Closer to 0 is stronger.' },
-        { name: 'Standard (802.11)', what: 'Wi-Fi generation: ax = Wi-Fi 6, ac = Wi-Fi 5, n = Wi-Fi 4.', how: 'If you only see "n", your router or device is older — upgrading to Wi-Fi 5/6 boosts speed dramatically.' },
+        { name: 'Standard (802.11)', what: 'Wi-Fi generation: ax = Wi-Fi 6, ac = Wi-Fi 5, n = Wi-Fi 4.', how: 'If you only see "n", your router or device is older - upgrading to Wi-Fi 5/6 boosts speed dramatically.' },
         { name: 'Receive / Transmit Rate', what: 'Actual negotiated link rate to the access point.', how: 'Drops when signal is weak or the standard is old. Should be hundreds of Mbps on modern Wi-Fi.' },
         { name: 'Channel Interference Scan', what: 'Counts how many nearby networks share each channel.', how: 'For 2.4 GHz, pick the recommended channel (1, 6, or 11) with the fewest overlaps to reduce interference.' },
       ]
@@ -1978,7 +1980,7 @@ function GuideView({ wslStatus }) {
       desc: 'Per-category scoring and intelligent, actionable recommendations.',
       items: [
         { name: 'Category Scores', what: 'Separate 0–100 scores for Internet, Wi-Fi, Latency, Stability, Security, DNS, Streaming, Gaming.', how: 'Lets you see exactly which aspect needs attention instead of one vague number. Below 60 = needs action.' },
-        { name: 'Intelligent Recommendations', what: 'Plain-English advice based on the measured results.', how: 'Follow them top-to-bottom — e.g. "switch to 5 GHz", "contact ISP about packet loss".' },
+        { name: 'Intelligent Recommendations', what: 'Plain-English advice based on the measured results.', how: 'Follow them top-to-bottom - e.g. "switch to 5 GHz", "contact ISP about packet loss".' },
         { name: 'DNS Provider Benchmark', what: 'Times Cloudflare, Google, Quad9, and OpenDNS resolvers.', how: 'Set the fastest one in your adapter settings for snappier browsing.' },
         { name: 'Local Network Health', what: 'Gateway ping with avg/min/max/median/p95/jitter/loss over 20 samples.', how: 'p95 and jitter reveal intermittent local congestion that a single ping would miss. Avg >10ms = local Wi-Fi issue.' },
         { name: 'Device Health', what: 'CPU, RAM, and power state of your computer.', how: 'High CPU/RAM or running on battery can throttle Wi-Fi. Plug in and close heavy apps for best speed.' },
@@ -1989,7 +1991,7 @@ function GuideView({ wslStatus }) {
       desc: 'Detects threats, attacks, and weak points in your network.',
       items: [
         { name: 'MITM Attack Check', what: 'Combines ARP, DNS, and certificate checks into one verdict.', how: '✓ "Low" Safe · ⚠ "High" Investigate · 🚨 "Critical" Disconnect immediately.' },
-        { name: 'ARP Spoofing Detector', what: 'Scans ARP table for the same MAC bound to multiple IPs (classic MITM signature).', how: 'Any duplicate MAC is a strong red flag — someone may be intercepting traffic.' },
+        { name: 'ARP Spoofing Detector', what: 'Scans ARP table for the same MAC bound to multiple IPs (classic MITM signature).', how: 'Any duplicate MAC is a strong red flag - someone may be intercepting traffic.' },
         { name: 'Wi-Fi Security Audit', what: 'Rates encryption strength (WPA3/WPA2/WPA/WEP/Open).', how: '✓ WPA3 Excellent · ✓ WPA2 Strong · ⚠ WPA Weak · ✗ WEP/Open Critical (switch network).' },
         { name: 'DNS Leak Test', what: 'Identifies whether DNS queries leak to ISP instead of private resolvers.', how: 'If only ISP DNS is configured, your ISP sees every site you visit. Switch to 1.1.1.1 or 9.9.9.9.' },
         { name: 'Open Ports Scan', what: 'Lists ports your machine is listening on (incoming).', how: 'Common: 135, 445 (Windows), 5040 (Cortana). >10 open is worth reviewing. Unknown high ports = investigate.' },
@@ -2004,7 +2006,7 @@ function GuideView({ wslStatus }) {
         { name: 'IP Address', what: 'Local IP assigned to the device by DHCP.', how: 'Gateway (router) is usually .1 or .254.' },
         { name: 'MAC Address', what: 'Hardware identifier of the device\'s network card.', how: 'First 3 bytes identify the manufacturer (OUI).' },
         { name: 'Vendor', what: 'Hardware manufacturer derived from MAC OUI prefix.', how: 'Helps identify which device is which (Apple = iPhone/Mac, Samsung = TV/phone, etc.).' },
-        { name: 'Hostname', what: 'Reverse DNS lookup of the device IP.', how: '"—" means no PTR record published. Common for IoT devices.' },
+        { name: 'Hostname', what: 'Reverse DNS lookup of the device IP.', how: '"-" means no PTR record published. Common for IoT devices.' },
         { name: 'Type', what: 'Dynamic = DHCP-assigned · Static = manually configured.', how: 'Most home devices are Dynamic. Static usually means servers/printers.' },
       ]
     },
@@ -2021,9 +2023,9 @@ function GuideView({ wslStatus }) {
       icon: '🗺', title: 'Route Trace Tab',
       desc: 'Maps the full path your traffic takes and geolocates each hop to find the bottleneck.',
       items: [
-        { name: 'Hop Table', what: 'Each router (hop) between you and the destination, with its latency.', how: 'Watch where latency suddenly jumps — that hop is the bottleneck.' },
+        { name: 'Hop Table', what: 'Each router (hop) between you and the destination, with its latency.', how: 'Watch where latency suddenly jumps - that hop is the bottleneck.' },
         { name: 'Network / Location', what: 'ISP/organisation and city/country of each public hop.', how: 'Tells you whether a slow hop is inside your ISP or further out on the internet.' },
-        { name: 'Largest Jump Analysis', what: 'Automatically highlights the biggest latency increase along the path.', how: 'If the jump is at an early ISP hop, your provider is the cause — useful evidence for support tickets.' },
+        { name: 'Largest Jump Analysis', what: 'Automatically highlights the biggest latency increase along the path.', how: 'If the jump is at an early ISP hop, your provider is the cause - useful evidence for support tickets.' },
       ]
     },
     {
@@ -2046,16 +2048,16 @@ function GuideView({ wslStatus }) {
     },
     ...(wslStatus?.installed ? [{
       icon: '🐧', title: 'WSL Tools Tab (Advanced)',
-      desc: 'Appears only when WSL (Windows Subsystem for Linux) is detected — unlocks professional Linux networking tools.',
+      desc: 'Appears only when WSL (Windows Subsystem for Linux) is detected - unlocks professional Linux networking tools.',
       items: [
-        { name: 'mtr — Live Route Quality', what: 'Sends many probes per hop to report per-hop packet loss and latency together.', how: 'The gold standard for proving exactly which hop drops packets. Any loss% before the final hop = that link is the culprit.' },
-        { name: 'dig — DNSSEC Validation', what: 'Checks whether DNS answers are cryptographically signed and validated.', how: '✓ Validated (AD flag) = tamper-proof DNS · Unsigned = common but offers no integrity guarantee.' },
+        { name: 'mtr - Live Route Quality', what: 'Sends many probes per hop to report per-hop packet loss and latency together.', how: 'The gold standard for proving exactly which hop drops packets. Any loss% before the final hop = that link is the culprit.' },
+        { name: 'dig - DNSSEC Validation', what: 'Checks whether DNS answers are cryptographically signed and validated.', how: '✓ Validated (AD flag) = tamper-proof DNS · Unsigned = common but offers no integrity guarantee.' },
         { name: 'Install Command', what: 'One-line command to add mtr & dig to your WSL distro if missing.', how: 'Copy it, paste into your Ubuntu/WSL terminal, then click "Re-check".' },
       ]
     }] : []),
     {
       icon: '⎘', title: 'Report Export (Header Buttons)',
-      desc: 'In the header — export your current results in multiple formats.',
+      desc: 'In the header - export your current results in multiple formats.',
       items: [
         { name: 'Copy Report', what: 'Copies a formatted plain-text report to the clipboard.', how: 'Paste in support tickets, emails to ISP, or save for trend analysis.' },
         { name: 'JSON Export', what: 'Downloads a complete structured snapshot of every metric.', how: 'Best for bug reports, scripting, or feeding into other tools.' },
@@ -2098,7 +2100,7 @@ function GuideView({ wslStatus }) {
       ))}
 
       <div className="guide-footer">
-        <p>💡 <b>Pro tip:</b> If your internet is slow, start with the <b>ISP Truth</b> tab. Compare local exchange latency vs Singapore latency — if local is fast but international is bad, the problem is your ISP, not your Wi-Fi.</p>
+        <p>💡 <b>Pro tip:</b> If your internet is slow, start with the <b>ISP Truth</b> tab. Compare local exchange latency vs Singapore latency - if local is fast but international is bad, the problem is your ISP, not your Wi-Fi.</p>
       </div>
     </div>
   );

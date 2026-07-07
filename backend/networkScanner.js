@@ -220,7 +220,7 @@ async function getIpConfig() {
 async function getPingStats(target) {
     if (!target || !SAFE_TARGET_RE.test(target)) return { latency: 'N/A', loss: 'N/A', jitter: 'N/A' };
     try {
-        const pingOut = await runCmd(`ping -n 6 ${target}`);
+        const pingOut = await runCmd(`ping -n 4 ${target}`);
 
         let latency = '';
         let loss = '';
@@ -373,14 +373,15 @@ async function getGlobalPingMatrix() {
             }
         }
 
-        // Ping Singapore (Cloudflare) - typically ~35-50ms from Sri Lanka
-        results.singapore = { ...results.singapore, ...(await getPingStats('1.1.1.1')) };
-        
-        // Ping US East (Google DNS)
-        results.usEast = { ...results.usEast, ...(await getPingStats('8.8.8.8')) };
-        
-        // Ping US West (OpenDNS)
-        results.usWest = { ...results.usWest, ...(await getPingStats('208.67.222.222')) };
+        // Ping all three regional targets in parallel (was sequential = 12s+)
+        const [sg, us, uw] = await Promise.all([
+            getPingStats('1.1.1.1'),
+            getPingStats('8.8.8.8'),
+            getPingStats('208.67.222.222')
+        ]);
+        results.singapore = { ...results.singapore, ...sg };
+        results.usEast    = { ...results.usEast, ...us };
+        results.usWest    = { ...results.usWest, ...uw };
 
     } catch (err) {
         console.error('Error in global ping matrix:', err.message);
@@ -540,7 +541,7 @@ async function detectDnsHijacking() {
                 results.hijackDetected = true;
                 results.analysis = '🚨 DNS HIJACKING DETECTED! System DNS returned IP from different organization than DoH.';
             } else if (!sameSubnet) {
-                results.analysis = `ℹ️ DNS returned different IPs (${results.systemDns.ip} vs ${results.doh.ip}). Likely CDN load balancing — normal for Google/Cloudflare.`;
+                results.analysis = `ℹ️ DNS returned different IPs (${results.systemDns.ip} vs ${results.doh.ip}). Likely CDN load balancing - normal for Google/Cloudflare.`;
             } else {
                 results.analysis = '✅ DNS healthy. Different IPs but same network (normal for CDN).';
             }
@@ -818,7 +819,7 @@ async function getConnectedDevices() {
 
                 result.devices.push({
                     ip, mac: macColon, vendor,
-                    hostname: hostname || '—',
+                    hostname: hostname || '-',
                     type: type === 'dynamic' ? 'Dynamic' : 'Static',
                     isGateway,
                     role: isGateway ? '🌐 Router/Gateway' : (vendor !== 'Unknown' ? `📱 ${vendor} Device` : '💻 Unknown Device')
@@ -845,7 +846,7 @@ async function getConnectedDevices() {
  * Checks for duplicate MAC addresses (one MAC mapped to multiple IPs)
  * which is a classic indicator of ARP poisoning / MITM attack
  */
-// Track the gateway MAC across calls — real ARP spoofing shows the gateway IP
+// Track the gateway MAC across calls - real ARP spoofing shows the gateway IP
 // switching to a different MAC between readings, not just multiple IPs per MAC
 // (the latter is normal on any machine with VMs/VPN adapters).
 const arpGatewayHistory = new Map(); // gatewayIP → Set<mac>
@@ -894,7 +895,7 @@ async function detectArpSpoofing() {
             }
         }
 
-        // --- Duplicate-MAC check (lower confidence — flag as Medium only) ---
+        // --- Duplicate-MAC check (lower confidence - flag as Medium only) ---
         // A single MAC owning multiple IPs is normal for VMs and VPN adapters.
         // We only treat it as suspicious when the shared MAC is also the gateway.
         const macToIps = {};
@@ -911,7 +912,7 @@ async function detectArpSpoofing() {
         if (result.duplicateMacs.length > 0) {
             result.spoofingDetected = true;
             result.risk = 'Medium';
-            result.analysis = `⚠️ Gateway MAC ${result.duplicateMacs[0].mac} responds to multiple IPs including the gateway. Possible MITM — investigate with mtr or dig.`;
+            result.analysis = `⚠️ Gateway MAC ${result.duplicateMacs[0].mac} responds to multiple IPs including the gateway. Possible MITM - investigate with mtr or dig.`;
         } else {
             result.analysis = '✅ No ARP spoofing detected. Gateway MAC address is stable and unique.';
         }
@@ -1147,7 +1148,7 @@ async function runMitmCheck() {
  * Detailed Ping Statistics
  * Pings a target N times and computes avg/min/max/median/p95/jitter/loss
  */
-async function pingDetailed(target, count = 10) {
+async function pingDetailed(target, count = 6) {
     const empty = {
         target: target || 'N/A', avg: 'N/A', min: 'N/A', max: 'N/A',
         median: 'N/A', p95: 'N/A', jitter: 'N/A', loss: 'N/A', samples: 0
@@ -1248,15 +1249,15 @@ async function getDetailedGatewayHealth() {
         if (!gateway) {
             return { latency: 'N/A', loss: 'N/A', jitter: 'N/A', min: 'N/A', max: 'N/A', avg: 'N/A', samples: [], gateway: '', verdict: 'Gateway not found', cls: '' };
         }
-        const stats = await pingDetailed(gateway, 10);
+        const stats = await pingDetailed(gateway, 6);
 
         let verdict = 'Unknown', cls = '';
         if (stats && stats.avg !== 'N/A') {
             const avg = parseFloat(stats.avg);
-            if (avg <= 5) { verdict = 'Excellent — no local congestion'; cls = 'good'; }
+            if (avg <= 5) { verdict = 'Excellent - no local congestion'; cls = 'good'; }
             else if (avg <= 10) { verdict = 'Good'; cls = 'good'; }
-            else if (avg <= 25) { verdict = 'Moderate — some local congestion'; cls = 'warn'; }
-            else { verdict = 'Poor — local wireless congestion detected'; cls = 'bad'; }
+            else if (avg <= 25) { verdict = 'Moderate - some local congestion'; cls = 'warn'; }
+            else { verdict = 'Poor - local wireless congestion detected'; cls = 'bad'; }
         }
         return { ...stats, gateway, verdict, cls };
     } catch (err) {
@@ -1366,7 +1367,7 @@ async function getDnsBenchmark() {
     ];
     const testDomain = 'www.wikipedia.org';
 
-    // Test all providers in parallel — cuts benchmark time from up to 10s to max(individual).
+    // Test all providers in parallel - cuts benchmark time from up to 10s to max(individual).
     const testOne = async (p) => {
         try {
             const r = new dnsPromises.Resolver();
@@ -1388,7 +1389,7 @@ async function getDnsBenchmark() {
         results,
         fastest: ok[0] || null,
         recommendation: ok[0]
-            ? `Fastest DNS: ${ok[0].name} (${ok[0].ip}) at ${ok[0].time}ms — set this in your adapter for snappier browsing.`
+            ? `Fastest DNS: ${ok[0].name} (${ok[0].ip}) at ${ok[0].time}ms - set this in your adapter for snappier browsing.`
             : 'No public DNS providers reachable.'
     };
 }
@@ -1414,9 +1415,9 @@ async function getDeviceHealth() {
         result.batteryPercent = battery.hasBattery ? battery.percent : null;
         result.onBattery = battery.hasBattery ? !battery.acConnected : false;
 
-        if (result.cpuLoad > 85) result.recommendations.push('High CPU usage may limit network throughput — close heavy apps.');
-        if (result.memUsedPercent > 90) result.recommendations.push('High RAM usage — free memory for better performance.');
-        if (result.onBattery) result.recommendations.push('On battery — Windows power saving may throttle the Wi-Fi adapter. Plug in for best speed.');
+        if (result.cpuLoad > 85) result.recommendations.push('High CPU usage may limit network throughput - close heavy apps.');
+        if (result.memUsedPercent > 90) result.recommendations.push('High RAM usage - free memory for better performance.');
+        if (result.onBattery) result.recommendations.push('On battery - Windows power saving may throttle the Wi-Fi adapter. Plug in for best speed.');
         if (result.recommendations.length === 0) result.recommendations.push('System resources are healthy.');
     } catch (err) {
         result.error = err.message;
@@ -1473,7 +1474,7 @@ async function getHealthBreakdown() {
             if (dnsBench.fastest.time > 60) dnsScore = 70; else if (dnsBench.fastest.time > 30) dnsScore = 85;
         }
 
-        // Security (baseline — detailed in Security tab)
+        // Security (baseline - detailed in Security tab)
         let security = 100;
         const auth = (wifi.auth || '').toLowerCase();
         if (auth.includes('open') || !auth) security = 30;
@@ -1491,17 +1492,17 @@ async function getHealthBreakdown() {
 
         // Recommendations
         if (wifi.connected && wifi.band === '2.4 GHz')
-            result.recommendations.push({ type: 'warn', text: 'Connected on 2.4 GHz — switch to 5 GHz for faster, less congested Wi-Fi.' });
+            result.recommendations.push({ type: 'warn', text: 'Connected on 2.4 GHz - switch to 5 GHz for faster, less congested Wi-Fi.' });
         if (wifi.connected && sig < 60)
-            result.recommendations.push({ type: 'warn', text: `Wi-Fi signal is ${wifi.signalPercent} — move closer to the router or add a mesh node.` });
+            result.recommendations.push({ type: 'warn', text: `Wi-Fi signal is ${wifi.signalPercent} - move closer to the router or add a mesh node.` });
         if (extAvg > 150)
-            result.recommendations.push({ type: 'warn', text: 'High internet latency — likely ISP routing. Compare at different times of day.' });
+            result.recommendations.push({ type: 'warn', text: 'High internet latency - likely ISP routing. Compare at different times of day.' });
         if (extLoss > 0)
-            result.recommendations.push({ type: 'bad', text: `${extLoss}% packet loss to the internet — contact your ISP if it persists.` });
+            result.recommendations.push({ type: 'bad', text: `${extLoss}% packet loss to the internet - contact your ISP if it persists.` });
         if (gwAvg > 15)
-            result.recommendations.push({ type: 'warn', text: 'High latency to your router — local Wi-Fi congestion or interference.' });
+            result.recommendations.push({ type: 'warn', text: 'High latency to your router - local Wi-Fi congestion or interference.' });
         if (security < 70)
-            result.recommendations.push({ type: 'bad', text: 'Weak Wi-Fi encryption detected — upgrade your router to WPA2/WPA3.' });
+            result.recommendations.push({ type: 'bad', text: 'Weak Wi-Fi encryption detected - upgrade your router to WPA2/WPA3.' });
         if (dnsBench.fastest && dnsBench.fastest.time > 40)
             result.recommendations.push({ type: 'warn', text: dnsBench.recommendation });
         if (result.recommendations.length === 0)
@@ -1533,7 +1534,7 @@ function isPublicIp(ip) {
     return true;
 }
 
-// In-memory cache for ipinfo.io results — same ISP hops repeat across every
+// In-memory cache for ipinfo.io results - same ISP hops repeat across every
 // route trace, so caching eliminates redundant API calls and prevents rate-limiting.
 const geoCache = new Map();
 
@@ -1597,18 +1598,18 @@ async function runSpeedDiagnostics() {
 
     // Bufferbloat: idle latency vs latency during a sustained download
     try {
-        const idle = await pingAvgMs('8.8.8.8', 5);
+        const idle = await pingAvgMs('8.8.8.8', 3);
         const dl = runCmd('curl.exe -s --max-time 10 -o NUL "https://speed.cloudflare.com/__down?bytes=50000000"', 12000).catch(() => {});
         await new Promise(r => setTimeout(r, 1500));
         const loaded = await pingAvgMs('8.8.8.8', 6);
         await dl;
         const increase = Math.max(0, loaded - idle);
         let grade, verdict;
-        if (increase < 30) { grade = 'A'; verdict = 'Excellent — no bufferbloat'; }
-        else if (increase < 60) { grade = 'B'; verdict = 'Good — minor bufferbloat'; }
-        else if (increase < 100) { grade = 'C'; verdict = 'Fair — noticeable under load'; }
-        else if (increase < 200) { grade = 'D'; verdict = 'Poor — laggy when busy'; }
-        else { grade = 'F'; verdict = 'Bad — severe bufferbloat (enable SQM/QoS on router)'; }
+        if (increase < 30) { grade = 'A'; verdict = 'Excellent - no bufferbloat'; }
+        else if (increase < 60) { grade = 'B'; verdict = 'Good - minor bufferbloat'; }
+        else if (increase < 100) { grade = 'C'; verdict = 'Fair - noticeable under load'; }
+        else if (increase < 200) { grade = 'D'; verdict = 'Poor - laggy when busy'; }
+        else { grade = 'F'; verdict = 'Bad - severe bufferbloat (enable SQM/QoS on router)'; }
         result.bufferbloat = {
             idleLatency: idle.toFixed(1),
             loadedLatency: loaded.toFixed(1),
@@ -1649,13 +1650,13 @@ async function getRouteAnalysis(target = '8.8.8.8', geo = true) {
             }
         });
 
-        // Geo-enrich (public hops in parallel — sequential lookups were the
+        // Geo-enrich (public hops in parallel - sequential lookups were the
         // main source of slowness on long routes)
         if (geo) {
             await Promise.all(hops.map(async (h) => {
                 if (h.ip && h.ip !== '*' && isPublicIp(h.ip)) {
                     const g = await ipGeo(h.ip);
-                    h.isp = g.org || '—';
+                    h.isp = g.org || '-';
                     h.country = g.country || '';
                     h.city = g.city || '';
                 } else if (h.ip && h.ip !== '*') {
@@ -1686,7 +1687,7 @@ async function getRouteAnalysis(target = '8.8.8.8', geo = true) {
 
 /**
  * Quick single connectivity check.
- * Uses a TCP socket instead of spawning ping.exe — returns in one RTT (~50ms)
+ * Uses a TCP socket instead of spawning ping.exe - returns in one RTT (~50ms)
  * and never competes with the subprocess pool, fixing the stability-test delay.
  */
 async function getQuickPing(target = '8.8.8.8') {
@@ -1697,7 +1698,7 @@ async function getQuickPing(target = '8.8.8.8') {
 /**
  * Wi-Fi Adapter Capabilities
  * Extracts which bands (2.4/5/6 GHz) and standards (802.11a/ac/ax…) the
- * physical NIC supports — regardless of what band it's currently connected to.
+ * physical NIC supports - regardless of what band it's currently connected to.
  */
 async function getWifiCapabilities() {
     const result = { supportedBands: [], isDualBand: false, supportedStandards: [], driver: '', vendor: '', error: null };

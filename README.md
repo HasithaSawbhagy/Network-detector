@@ -1,6 +1,6 @@
 # Network Detector
 
-A comprehensive Windows desktop application built with **Electron + React + Express** for real-time network diagnostics, ISP performance analysis, and security threat detection — no browser needed, no cloud, everything runs locally on your machine.
+A comprehensive Windows desktop application built with **Electron + React + Express** for real-time network diagnostics, ISP performance analysis, and security threat detection - no browser needed, no cloud, everything runs locally on your machine.
 
 [![Latest release](https://img.shields.io/github/v/release/HasithaSawbhagy/Network-detector?label=release&sort=semver)](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)
 [![Downloads](https://img.shields.io/github/downloads/HasithaSawbhagy/Network-detector/total)](https://github.com/HasithaSawbhagy/Network-detector/releases)
@@ -13,7 +13,7 @@ A comprehensive Windows desktop application built with **Electron + React + Expr
 
 ## Features
 
-### **Overview** — Network Snapshot
+### **Overview** - Network Snapshot
 Real-time monitoring of your connection health with 6 live cards:
 - **Wi-Fi Info**: SSID, signal quality, link speed, security protocol
 - **Live Bandwidth**: Download/upload speeds (updates every second)
@@ -22,14 +22,14 @@ Real-time monitoring of your connection health with 6 live cards:
 - **Public Details**: External IP, ISP/ASN, geolocation
 - **Connection Health**: Stability score (0-100) with local/ISP breakdown
 
-### **ISP Truth** — Routing Analysis
+### **ISP Truth** - Routing Analysis
 Expose ISP performance issues with evidence-based metrics:
 - **Multi-Region Latency Matrix**: Ping local exchange, Singapore (1.1.1.1), US East (8.8.8.8), US West (208.67.222.222)
 - **CDN Speed Test**: Download 10MB from Cloudflare edge servers
 - **DNS Hijacking Detector**: Compare system DNS vs DoH (Cloudflare)
 - **Copy Evidence Report**: Export all metrics to clipboard for ISP support tickets
 
-### **Wi-Fi Analyzer** — Signal & Channels
+### **Wi-Fi Analyzer** - Signal & Channels
 Professional wireless diagnostics that rival commercial Wi-Fi analyzers:
 - **Signal Analysis**: SSID, BSSID, band (2.4/5 GHz), channel, signal %, **RSSI (dBm)**
 - **Standard Detection**: 802.11ax (Wi-Fi 6) / ac (Wi-Fi 5) / n (Wi-Fi 4)
@@ -37,15 +37,15 @@ Professional wireless diagnostics that rival commercial Wi-Fi analyzers:
 - **Channel Interference Scan**: Counts networks per channel, recommends the clearest 2.4 GHz channel (1/6/11)
 - **Nearby Networks**: Lists surrounding APs sorted by signal strength
 
-### **Health & Tips** — Scores & Advice
+### **Health & Tips** - Scores & Advice
 Per-category scoring and intelligent recommendations:
 - **8 Category Scores** (0-100): Internet, Wi-Fi, Latency, Stability, Security, DNS, Streaming, Gaming
 - **Intelligent Recommendations**: Plain-English, actionable advice based on measured results
-- **DNS Provider Benchmark**: Times Cloudflare, Google, Quad9, OpenDNS — recommends the fastest
+- **DNS Provider Benchmark**: Times Cloudflare, Google, Quad9, OpenDNS - recommends the fastest
 - **Detailed Local Health**: Gateway ping with avg/min/max/median/**p95**/jitter/loss over 20 samples
 - **Device Health**: CPU load, RAM usage, and power state that can throttle Wi-Fi
 
-### **Security** — Threat Scanner
+### **Security** - Threat Scanner
 Advanced network security auditing:
 - **MITM Check**: Detect man-in-the-middle attacks (combines ARP + DNS + TLS checks)
 - **ARP Spoofing**: Identify duplicate MAC addresses (classic MITM signature)
@@ -56,7 +56,7 @@ Advanced network security auditing:
 - **SSL/TLS Verification**: Certificate validation for known-good sites
 - **Encryption Analysis**: Cipher suite strength (TKIP vs AES/CCMP)
 
-### **Devices** — Connected Devices
+### **Devices** - Connected Devices
 Live enumeration of all devices on your network:
 - IP address, MAC address, hostname (reverse DNS)
 - **Vendor lookup** via MAC OUI database (Apple, Samsung, Intel, TP-Link, etc.)
@@ -64,7 +64,7 @@ Live enumeration of all devices on your network:
 - Gateway highlighted with visual indicator
 - One-click rescan
 
-### **Diagnostics** — Deep Inspect
+### **Diagnostics** - Deep Inspect
 Detailed network interface analysis:
 - Interface details (protocol, band, channel, BSSID)
 - DHCP lease information
@@ -73,37 +73,37 @@ Detailed network interface analysis:
 - Network device count from ARP table
 - Wireless signal strength trends
 
-### **How to Use** — Metric Guide
+### **How to Use** - Metric Guide
 Built-in documentation explaining:
 - What each metric measures
 - How to interpret results (good/warning/critical thresholds)
 - Actionable recommendations for issues
 - Glossary of networking terms
 
-### **Speed & Stability** — Phases & Bufferbloat
+### **Speed & Stability** - Phases & Bufferbloat
 On-demand deep speed analysis:
-- **Connection phase breakdown** — times DNS, TCP, TLS, and time-to-first-byte during a real download to pinpoint where slowness starts
-- **Bufferbloat grade (A–F)** — measures latency increase under load (critical for calls/gaming)
-- **60-second stability test** — pings every second with a live graph, counting drops and reconnects
+- **Connection phase breakdown** - times DNS, TCP, TLS, and time-to-first-byte during a real download to pinpoint where slowness starts
+- **Bufferbloat grade (A–F)** - measures latency increase under load (critical for calls/gaming)
+- **60-second stability test** - pings every second with a live graph, counting drops and reconnects
 
-### **Route Trace** — Hop-by-Hop Path
+### **Route Trace** - Hop-by-Hop Path
 - Full traceroute with per-hop latency
 - **Geolocation** of each public hop (ISP/organisation, city, country)
 - Automatic detection of the largest latency jump (the bottleneck)
 
-### **Trends** — History & Graphs
+### **Trends** - History & Graphs
 - Samples download, upload, latency, and Wi-Fi signal every 30 seconds
-- Stored **locally** on your device (no cloud) — capped at the last 200 samples
+- Stored **locally** on your device (no cloud) - capped at the last 200 samples
 - Inline SVG sparkline charts to spot recurring drop-outs and peak-hour congestion
 
-### **WSL Tools** — Linux Networking (auto-detected)
-Appears only when **WSL (Windows Subsystem for Linux)** is installed. Provides Linux-native tools that use different probe types than Windows — revealing hops and issues Windows tools miss:
-- **mtr** — combined traceroute + ping showing per-hop packet loss and jitter (10 probes per hop)
-- **dig** — DNSSEC validation (AD flag / RRSIG records)
-- **traceroute** — UDP-based path trace (different from ICMP-only Windows `tracert`)
-- **nmap LAN scan** — host discovery using multiple probe types; finds phones, smart TVs, and devices Windows ARP misses
-- **IPv6 test** — checks whether your ISP provides working IPv6 connectivity
-- **HTTP Header Inspector** — fetches response headers to detect ISP proxy injection, identify CDN/edge server, and spot privacy-relevant fields
+### **WSL Tools** - Linux Networking (auto-detected)
+Appears only when **WSL (Windows Subsystem for Linux)** is installed. Provides Linux-native tools that use different probe types than Windows - revealing hops and issues Windows tools miss:
+- **mtr** - combined traceroute + ping showing per-hop packet loss and jitter (10 probes per hop)
+- **dig** - DNSSEC validation (AD flag / RRSIG records)
+- **traceroute** - UDP-based path trace (different from ICMP-only Windows `tracert`)
+- **nmap LAN scan** - host discovery using multiple probe types; finds phones, smart TVs, and devices Windows ARP misses
+- **IPv6 test** - checks whether your ISP provides working IPv6 connectivity
+- **HTTP Header Inspector** - fetches response headers to detect ISP proxy injection, identify CDN/edge server, and spot privacy-relevant fields
 - One-click copy of the install command if tools aren't present yet
 
 ---
@@ -112,55 +112,63 @@ Appears only when **WSL (Windows Subsystem for Linux)** is installed. Provides L
 
 > **Versioning:** This project follows [Semantic Versioning](https://semver.org/) (`MAJOR.MINOR.PATCH`). Every release is tagged in git (e.g. `v1.3.2`) and published on the **[Releases page](https://github.com/HasithaSawbhagy/Network-detector/releases)** with the installer attached. To find the code for any version, check out its tag: `git checkout v1.3.2`.
 
-### v1.3.2 (Latest) — **Router Admin & Bug Fixes**
-- 🔧 **Fixed "Open Admin Page" doing nothing** — endpoint path mismatch (`/api/open-browser` vs `/api/network/open-browser`) corrected; the button now opens the router UI in your system browser.
-- 🌐 **SLT / broadband ONT support** — router-admin brand detection now follows the login redirect and recognises Boa/Realtek ISP routers (e.g. SLT-Mobitel HG7). Added a session-cookie login + client-list scraper for these devices, plus an honest fallback message for unsupported models.
-- 🎨 **Wi-Fi Analyzer layout fix** — moved "Nearby Networks" to fill the grid gap left by the full-width dual-band notice.
+### v1.3.3 (Latest) - **Performance & Polish**
+- Removed all em-dash (`-`) characters from UI, labels, and documentation for cleaner typography.
+- **~50% faster startup:** restructured 4-phase background loading so the UI is responsive within <1s. Zero-subprocess calls fire first; pings/scans stagger in at 0.8s, 2.5s, and 5s.
+- **Global ping matrix now parallel:** regional targets (Singapore, US East, US West) now measured simultaneously instead of sequentially. Result appears in ~5s instead of 15s+.
+- **Faster gateway health:** reduced from 10 pings (10s) to 6 pings (6s).
+- **Faster basic pings:** `getPingStats` reduced from 6 to 4 pings per target (4s instead of 6s).
+- **Faster bufferbloat test:** idle baseline reduced from 5 to 3 pings.
 
-### v1.3.1 — **Dual-band Capability & Router Admin**
-- 📶 **Adapter band capability** — shows whether your Wi-Fi card supports 2.4 GHz + 5 GHz (read from `netsh wlan show drivers`), with a warning banner when you're on the slower 2.4 GHz band despite 5 GHz support.
-- 🔧 **Router Admin panel** (Devices tab) — enter router credentials to fetch the full device list directly from the router (TP-Link Archer, ASUS, generic), with a one-click "Open Admin Page".
+### v1.3.2 - **Router Admin & Bug Fixes**
+- 🔧 **Fixed "Open Admin Page" doing nothing** - endpoint path mismatch (`/api/open-browser` vs `/api/network/open-browser`) corrected; the button now opens the router UI in your system browser.
+- 🌐 **SLT / broadband ONT support** - router-admin brand detection now follows the login redirect and recognises Boa/Realtek ISP routers (e.g. SLT-Mobitel HG7). Added a session-cookie login + client-list scraper for these devices, plus an honest fallback message for unsupported models.
+- 🎨 **Wi-Fi Analyzer layout fix** - moved "Nearby Networks" to fill the grid gap left by the full-width dual-band notice.
 
-### v1.3.0 — **Accuracy Fixes & WSL Power Tools**
+### v1.3.1 - **Dual-band Capability & Router Admin**
+- 📶 **Adapter band capability** - shows whether your Wi-Fi card supports 2.4 GHz + 5 GHz (read from `netsh wlan show drivers`), with a warning banner when you're on the slower 2.4 GHz band despite 5 GHz support.
+- 🔧 **Router Admin panel** (Devices tab) - enter router credentials to fetch the full device list directly from the router (TP-Link Archer, ASUS, generic), with a one-click "Open Admin Page".
+
+### v1.3.0 - **Accuracy Fixes & WSL Power Tools**
 
 **Bug fixes (based on ChatGPT analysis of the generated report):**
--  **ARP spoofing false positive fixed** — the previous detection flagged any MAC with multiple IPs (normal for VMs / VPN adapters). Rewritten to track the **gateway MAC over time**; only fires High when the gateway IP changes to a different MAC — a genuine MITM indicator. Downgraded single-occurrence duplicate MACs to Medium.
--  **Stability rating now accurate** — "Poor — occasional drops" was shown even when there were **zero drops** (just high jitter). New tier: "Fair — high jitter (no drops)" when loss=0 but jitter ≥30 ms.
--  **DNS benchmark anomalies labelled** — values >200 ms are now annotated with "⚠ slow (possible cache miss or resolver congestion)" in the report so they aren't misread as typical latency.
--  **LAN device scan improved** — now performs a parallel **ping sweep** of the /24 subnet before reading the ARP cache. Devices that haven't communicated recently (phones on standby, smart TVs) now appear correctly.
--  **Report clarifications** — Throughput now shows a note explaining it's the live NIC rate, not a speed test result; channel-overlap warning added for non-standard 2.4 GHz channels; signal quality labelled (Excellent / Very Good / Good / Fair / Poor).
+-  **ARP spoofing false positive fixed** - the previous detection flagged any MAC with multiple IPs (normal for VMs / VPN adapters). Rewritten to track the **gateway MAC over time**; only fires High when the gateway IP changes to a different MAC - a genuine MITM indicator. Downgraded single-occurrence duplicate MACs to Medium.
+-  **Stability rating now accurate** - "Poor - occasional drops" was shown even when there were **zero drops** (just high jitter). New tier: "Fair - high jitter (no drops)" when loss=0 but jitter ≥30 ms.
+-  **DNS benchmark anomalies labelled** - values >200 ms are now annotated with "⚠ slow (possible cache miss or resolver congestion)" in the report so they aren't misread as typical latency.
+-  **LAN device scan improved** - now performs a parallel **ping sweep** of the /24 subnet before reading the ARP cache. Devices that haven't communicated recently (phones on standby, smart TVs) now appear correctly.
+-  **Report clarifications** - Throughput now shows a note explaining it's the live NIC rate, not a speed test result; channel-overlap warning added for non-standard 2.4 GHz channels; signal quality labelled (Excellent / Very Good / Good / Fair / Poor).
 
 **New WSL tools (4 additions):**
--  **traceroute** — UDP-based path analysis (complementary to Windows ICMP tracert)
--  **nmap LAN scan** — discovers phones, smart TVs, and isolated devices ARP misses
--  **IPv6 connectivity test** — verifies dual-stack connectivity
--  **HTTP Header Inspector** — detects ISP proxy injection, CDN/edge identification
+-  **traceroute** - UDP-based path analysis (complementary to Windows ICMP tracert)
+-  **nmap LAN scan** - discovers phones, smart TVs, and isolated devices ARP misses
+-  **IPv6 connectivity test** - verifies dual-stack connectivity
+-  **HTTP Header Inspector** - detects ISP proxy injection, CDN/edge identification
 
-### v1.2.4 — **Performance: TCP Ping Engine**
--  **Stability test now exactly 60 seconds** — replaced `ping.exe` subprocess (200ms+ spawn overhead, 2–4s under load) with a **Node.js TCP socket ping** (~50ms, no subprocess). Previously the test could take 5+ minutes under load.
+### v1.2.4 - **Performance: TCP Ping Engine**
+-  **Stability test now exactly 60 seconds** - replaced `ping.exe` subprocess (200ms+ spawn overhead, 2–4s under load) with a **Node.js TCP socket ping** (~50ms, no subprocess). Previously the test could take 5+ minutes under load.
 -  DNS benchmark providers now tested in parallel.
--  Geo-lookup cache — repeat route traces are instant (no redundant ipinfo.io calls).
--  Health check ping count reduced (10→6) — saves ~4s per run.
+-  Geo-lookup cache - repeat route traces are instant (no redundant ipinfo.io calls).
+-  Health check ping count reduced (10→6) - saves ~4s per run.
 
-### v1.2.3 — **Report Quality Fixes**
+### v1.2.3 - **Report Quality Fixes**
 - Fixed DNS benchmark showing "N/A" (was reading wrong field name).
 - Fixed Health Scores showing 100/100 (was using a different scoring path than the Health tab).
 - Fixed "Local IP: N/A" in report.
 - Fixed "loss 0% loss" double word.
 - Added System Resources (CPU/RAM/battery) and more sections to the report.
 
-### v1.2.2 — **Performance: Connection Pool Fix**
-- Root cause fix for "buttons don't work while scans run" — 14 aggressive polling intervals saturated Chromium's 6-connection limit. All intervals lengthened, startup burst staggered into 4 phases.
+### v1.2.2 - **Performance: Connection Pool Fix**
+- Root cause fix for "buttons don't work while scans run" - 14 aggressive polling intervals saturated Chromium's 6-connection limit. All intervals lengthened, startup burst staggered into 4 phases.
 - Stability test converted to recursive timeout (prevented pile-up on cold start).
 
-### v1.2.0 — **Speed Phases, Route Tracing, Trends & WSL**
+### v1.2.0 - **Speed Phases, Route Tracing, Trends & WSL**
 
 ---
 
 ## How It Works
 
 ### Data Collection
-All measurements run **locally** — no data leaves your machine except:
+All measurements run **locally** - no data leaves your machine except:
 - `ipinfo.io` for geolocation of public IPs (route trace only, cached in memory)
 - `speed.cloudflare.com` for the speed test download
 - Cloudflare DoH (`1.1.1.1`) for DNS hijacking comparison
@@ -178,8 +186,8 @@ All measurements run **locally** — no data leaves your machine except:
 | WSL tools | `wsl.exe -d <distro> -- <tool>` | Direct execFile (no cmd.exe wrapper, windowsHide) |
 
 ### WSL Tool Detection
-1. **`detectWsl()`** — runs `wsl -l -q` (lists distros, **never boots**). Used for tab visibility.
-2. **`checkWslTools()`** — boots the distro, runs `command -v` checks. Only called on explicit user click.
+1. **`detectWsl()`** - runs `wsl -l -q` (lists distros, **never boots**). Used for tab visibility.
+2. **`checkWslTools()`** - boots the distro, runs `command -v` checks. Only called on explicit user click.
 3. Each tool function runs via `execFile(wsl.exe, [...args], { windowsHide: true })` to suppress the console window.
 
 ### Security Detection Logic
@@ -198,7 +206,7 @@ All measurements run **locally** — no data leaves your machine except:
 | | Signal Quality | Wireless signal strength (green ≥ 70%, yellow ≥ 40%, red < 40%) |
 | | Link Speed | Physical Rx/Tx rate between NIC and router (not internet speed) |
 | | Security | Authentication + cipher (WPA3/WPA2-Personal, AES/CCMP/TKIP) |
-| **Bandwidth** | Download / Upload | Real-time throughput across all interfaces (Mbps) — updates every second |
+| **Bandwidth** | Download / Upload | Real-time throughput across all interfaces (Mbps) - updates every second |
 | **Network Config** | IPv4 / Subnet / Gateway | Local network addressing |
 | | DHCP Server / Lease | DHCP server IP and lease validity window |
 | | DNS Servers | Configured name servers |
@@ -237,8 +245,8 @@ All measurements run **locally** — no data leaves your machine except:
 
 ```
 network-detector/
-├── main.js               # Electron entry point — creates main window (1200x800) + toolbar window (390x38)
-├── package.json          # Root — Electron + electron-builder config
+├── main.js               # Electron entry point - creates main window (1200x800) + toolbar window (390x38)
+├── package.json          # Root - Electron + electron-builder config
 ├── backend/
 │   ├── server.js         # Express API server (port 3001), serves frontend/dist + toolbar HTML
 │   ├── networkScanner.js # All network diagnostics (netsh, ipconfig, ping, tracert, arp, netstat)
@@ -287,10 +295,10 @@ Electron main.js
 
 ##  Getting Started (End Users)
 
-**Latest Release:** v1.3.2
+**Latest Release:** v1.3.3
 
-1. Download **Network Detector Setup 1.3.2.exe** from the **[Releases page](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)**
-2. Run the installer (Windows may show SmartScreen warning — click "More info" → "Run anyway")
+1. Download **Network Detector Setup 1.3.3.exe** from the **[Releases page](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)**
+2. Run the installer (Windows may show SmartScreen warning - click "More info" → "Run anyway")
 3. App opens automatically after installation
 4. Navigate tabs via the sidebar:
    - **Overview**: Network snapshot (connection, WiFi, bandwidth, IP, latency, health, device)
@@ -306,7 +314,7 @@ Electron main.js
 
 **"DNS Hijacking Detected" warning but I'm not being attacked:**
 - **Fixed in v1.0.10!** Earlier versions had false positives due to CDN load-balancing.
-- If you see: "Different IPs but same network (normal for CDN)" — this is **benign**.
+- If you see: "Different IPs but same network (normal for CDN)" - this is **benign**.
 - Only worry if it says: "IP from different organization" with High Risk.
 
 **App shows blank window:**
@@ -433,9 +441,9 @@ This command:
 
 | Version | Date | Changes |
 |---|---|---|
-| **1.2.0** | 2026-06-28 |  **Speed phases, route tracing, trends & WSL**: new **Speed & Stability** tab (DNS/TCP/TLS/TTFB phase breakdown via `curl.exe`, bufferbloat grade A–F, 60-second stability test with live drop/reconnect graph); new **Route Trace** tab (hop-by-hop traceroute with per-hop geolocation + bottleneck detection); new **Trends** tab (local 30s-interval history with inline SVG sparklines); new **WSL Tools** tab (auto-detected — mtr per-hop loss + dig DNSSEC, with copy-paste install command); guide updated for all new tabs |
+| **1.2.0** | 2026-06-28 |  **Speed phases, route tracing, trends & WSL**: new **Speed & Stability** tab (DNS/TCP/TLS/TTFB phase breakdown via `curl.exe`, bufferbloat grade A–F, 60-second stability test with live drop/reconnect graph); new **Route Trace** tab (hop-by-hop traceroute with per-hop geolocation + bottleneck detection); new **Trends** tab (local 30s-interval history with inline SVG sparklines); new **WSL Tools** tab (auto-detected - mtr per-hop loss + dig DNSSEC, with copy-paste install command); guide updated for all new tabs |
 | **1.1.0** | 2026-06-28 |  **Major diagnostics upgrade**: Accurate active-interface detection (Wi-Fi/Ethernet/VPN via default route); new **Wi-Fi Analyzer** tab (RSSI dBm, channel interference scan, link rates); new **Health & Tips** tab (8 category scores + intelligent recommendations); detailed gateway health (avg/min/max/median/p95/jitter/loss); DNS provider benchmark; device health (CPU/RAM/power); JSON + Markdown report export |
-| 1.0.10 | 2026-06-20 |  **Bug Fix**: DNS hijacking detector fixed to eliminate false positives — now only flags if IPs are from different organizations (not just different CDN servers); improved analysis messages to distinguish CDN load-balancing from actual hijacking |
+| 1.0.10 | 2026-06-20 |  **Bug Fix**: DNS hijacking detector fixed to eliminate false positives - now only flags if IPs are from different organizations (not just different CDN servers); improved analysis messages to distinguish CDN load-balancing from actual hijacking |
 | 1.0.9 | 2026-06-19 | Modern collapsible sidebar navigation; Connected Devices tab with MAC vendor lookup (~100 manufacturers); How to Use guide with comprehensive metric explanations; Advanced security suite (MITM, ARP spoofing, WiFi audit, DNS leak); Floating toolbar styling (sharp top corners) |
 | 1.0.8 | 2026-06-18 | Added all advanced security endpoints; Fixed blank window bug (frontend referenced non-existent endpoints) |
 | 1.0.7 | 2026-06-17 | ISP Truth tab: Multi-region latency matrix, CDN speed test, DNS hijacking detector; Split health score (30% local + 70% ISP); ISP Evidence Report copy button |
@@ -454,28 +462,28 @@ This command:
 ### For ISP Troubleshooting
 1. Go to **ISP Truth** tab
 2. Run **CDN Speed Test** to check actual download speeds
-3. Check **Multi-Region Latency** — high latency to local exchange indicates ISP routing issues
+3. Check **Multi-Region Latency** - high latency to local exchange indicates ISP routing issues
 4. Click **Copy Evidence Report** to export all metrics for support tickets
 
 ### For Security Audits
 1. Go to **Security** tab
-2. Run **MITM Check** — should show "Low Risk" on clean networks
-3. Check **WiFi Security Audit** — WPA2/WPA3 with AES is secure, WEP/Open is dangerous
-4. Review **Port Scan** — only expected services should be listening
-5. **Devices** tab shows all network devices — unknown MACs may indicate intruders
+2. Run **MITM Check** - should show "Low Risk" on clean networks
+3. Check **WiFi Security Audit** - WPA2/WPA3 with AES is secure, WEP/Open is dangerous
+4. Review **Port Scan** - only expected services should be listening
+5. **Devices** tab shows all network devices - unknown MACs may indicate intruders
 
 ### For Performance Monitoring
 1. **Overview** tab shows real-time connection health (0-100 score)
 2. Watch **Live Bandwidth** for unexpected spikes (background downloads/uploads)
-3. **Gateway Latency** should be <5ms — higher indicates WiFi interference
-4. **External Latency** shows ISP quality — <50ms is excellent, >100ms is poor
+3. **Gateway Latency** should be <5ms - higher indicates WiFi interference
+4. **External Latency** shows ISP quality - <50ms is excellent, >100ms is poor
 
 ### Understanding Security Warnings
 
 | Warning | Meaning | Action |
 |---|---|---|
 | **DNS Hijacking Detected** | System DNS returns different IPs from trusted DoH | Check if using ISP DNS vs privacy resolvers; upgrade to v1.0.10 if seeing false positives |
-| **ARP Spoofing Detected** | Multiple IPs bound to same MAC | Possible MITM attack — investigate duplicate MAC addresses |
+| **ARP Spoofing Detected** | Multiple IPs bound to same MAC | Possible MITM attack - investigate duplicate MAC addresses |
 | **MITM High Risk** | Multiple security checks failed | Avoid sensitive activities, check WiFi security, scan for rogue devices |
 | **DNS Leak** | DNS bypassing VPN/privacy resolvers | VPN may not be protecting DNS queries |
 | **WiFi Security: WEP/Open** | Weak or no encryption | Switch to WPA2/WPA3 immediately |
