@@ -3,8 +3,8 @@
 A comprehensive Windows desktop application built with **Electron + React + Express** for real-time network diagnostics, ISP performance analysis, and security threat detection - no browser needed, no cloud, everything runs locally on your machine.
 
 [![Latest release](https://img.shields.io/github/v/release/HasithaSawbhagy/Network-detector?label=release&sort=semver)](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)
-[![Downloads](https://img.shields.io/github/downloads/HasithaSawbhagy/Network-detector/total)](https://github.com/HasithaSawbhagy/Network-detector/releases)
-[![License](https://img.shields.io/github/license/HasithaSawbhagy/Network-detector)](LICENSE)
+[![Releases](https://img.shields.io/github/release-date/HasithaSawbhagy/Network-detector?label=released)](https://github.com/HasithaSawbhagy/Network-detector/releases)
+[![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows-blue)
 
 📥 **[Download the latest release](https://github.com/HasithaSawbhagy/Network-detector/releases/latest)**
