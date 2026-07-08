@@ -119,7 +119,6 @@ Appears only when **WSL (Windows Subsystem for Linux)** is installed. Provides L
 - Report now separates "Single-stream" from the multi-stream "CDN Speed Test" and includes peak + data downloaded.
 
 ### v1.3.3 - **Performance & Polish**
-- Removed all em-dash (`-`) characters from UI, labels, and documentation for cleaner typography.
 - **~50% faster startup:** restructured 4-phase background loading so the UI is responsive within <1s. Zero-subprocess calls fire first; pings/scans stagger in at 0.8s, 2.5s, and 5s.
 - **Global ping matrix now parallel:** regional targets (Singapore, US East, US West) now measured simultaneously instead of sequentially. Result appears in ~5s instead of 15s+.
 - **Faster gateway health:** reduced from 10 pings (10s) to 6 pings (6s).
@@ -127,17 +126,17 @@ Appears only when **WSL (Windows Subsystem for Linux)** is installed. Provides L
 - **Faster bufferbloat test:** idle baseline reduced from 5 to 3 pings.
 
 ### v1.3.2 - **Router Admin & Bug Fixes**
-- 🔧 **Fixed "Open Admin Page" doing nothing** - endpoint path mismatch (`/api/open-browser` vs `/api/network/open-browser`) corrected; the button now opens the router UI in your system browser.
-- 🌐 **SLT / broadband ONT support** - router-admin brand detection now follows the login redirect and recognises Boa/Realtek ISP routers (e.g. SLT-Mobitel HG7). Added a session-cookie login + client-list scraper for these devices, plus an honest fallback message for unsupported models.
-- 🎨 **Wi-Fi Analyzer layout fix** - moved "Nearby Networks" to fill the grid gap left by the full-width dual-band notice.
+-  **Fixed "Open Admin Page" doing nothing** - endpoint path mismatch (`/api/open-browser` vs `/api/network/open-browser`) corrected; the button now opens the router UI in your system browser.
+-  **SLT / broadband ONT support** - router-admin brand detection now follows the login redirect and recognises Boa/Realtek ISP routers (e.g. SLT-Mobitel HG7). Added a session-cookie login + client-list scraper for these devices, plus an honest fallback message for unsupported models.
+-  **Wi-Fi Analyzer layout fix** - moved "Nearby Networks" to fill the grid gap left by the full-width dual-band notice.
 
 ### v1.3.1 - **Dual-band Capability & Router Admin**
-- 📶 **Adapter band capability** - shows whether your Wi-Fi card supports 2.4 GHz + 5 GHz (read from `netsh wlan show drivers`), with a warning banner when you're on the slower 2.4 GHz band despite 5 GHz support.
-- 🔧 **Router Admin panel** (Devices tab) - enter router credentials to fetch the full device list directly from the router (TP-Link Archer, ASUS, generic), with a one-click "Open Admin Page".
+-  **Adapter band capability** - shows whether your Wi-Fi card supports 2.4 GHz + 5 GHz (read from `netsh wlan show drivers`), with a warning banner when you're on the slower 2.4 GHz band despite 5 GHz support.
+-  **Router Admin panel** (Devices tab) - enter router credentials to fetch the full device list directly from the router (TP-Link Archer, ASUS, generic), with a one-click "Open Admin Page".
 
 ### v1.3.0 - **Accuracy Fixes & WSL Power Tools**
 
-**Bug fixes (based on ChatGPT analysis of the generated report):**
+**Bug fixes:**
 -  **ARP spoofing false positive fixed** - the previous detection flagged any MAC with multiple IPs (normal for VMs / VPN adapters). Rewritten to track the **gateway MAC over time**; only fires High when the gateway IP changes to a different MAC - a genuine MITM indicator. Downgraded single-occurrence duplicate MACs to Medium.
 -  **Stability rating now accurate** - "Poor - occasional drops" was shown even when there were **zero drops** (just high jitter). New tier: "Fair - high jitter (no drops)" when loss=0 but jitter ≥30 ms.
 -  **DNS benchmark anomalies labelled** - values >200 ms are now annotated with "⚠ slow (possible cache miss or resolver congestion)" in the report so they aren't misread as typical latency.
